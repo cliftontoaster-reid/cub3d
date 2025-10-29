@@ -1,0 +1,162 @@
+CC = clang
+CFLAGS = -Wall -Wextra -Werror -std=gnu17 -pipe
+LDFLAGS = -lm -lX11 -lXext
+RM ?= rm -rf
+
+MODE ?= debug
+ifeq ($(MODE),release)
+	CFLAGS  += -O3 -g0 -D_FORTIFY_SOURCE=2
+	LDFLAGS += -Wl,-z,relro -Wl,-z,now
+else ifeq ($(MODE),debug)
+	CFLAGS  += -O0 -g3 -fstack-protector-strong -fstack-clash-protection -Warray-bounds -Wformat-security -fsanitize=address,undefined -fno-omit-frame-pointer
+	LDFLAGS += -fsanitize=address,undefined
+else
+	$(error "Invalid MODE specified: $(MODE). Use 'debug' or 'release'.")
+endif
+
+# Tools optimization
+## Prefer clang, fall back to gcc, then cc
+ifneq (, $(shell which clang))
+	CC      = clang
+else ifneq (, $(shell which gcc))
+	CC      = gcc
+else
+	CC      = cc
+endif
+## If mold is available, use it as a drop-in replacement for 'ld'
+ifneq (, $(shell which mold))
+	LDFLAGS += -fuse-ld=mold
+endif
+
+# Project
+NAME = cub3d
+VERSION = 0.1.0-exp.1
+
+# Folders
+SRC_DIR = src
+TEST_DIR = tests
+TARGET = x86_64-linux-gnu
+ORIGIN_DIR = target
+TARGET_DIR = $(ORIGIN_DIR)/$(TARGET)/$(NAME)
+OBJ_DIR = $(TARGET_DIR)/obj
+TEST_OBJ_DIR = $(TARGET_DIR)/tobj
+DEP_DIR = $(TARGET_DIR)/dep
+BIN_DIR = $(TARGET_DIR)/bin
+TMP_DIR = $(TARGET_DIR)/tmp
+SCRIPT_DIR = scripts
+INC_DIR = include
+
+## If ccache is available, use it to speed up recompilation, it should use TARGET_DIR/ccache as its cache directory
+ifneq (, $(shell which ccache))
+	export CCACHE_DIR = $(TARGET_DIR)/ccache
+	CC := ccache $(CC)
+endif
+
+# Source files
+SRC := $(shell find $(SRC_DIR) -type f -name '*.c')
+TSRC := $(shell find $(TEST_DIR) -type f -name '*.c')
+INC := $(shell find $(INC_DIR) -type f -name '*.h' -not -name '*.int.h')
+OBJ := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC))
+DEP := $(patsubst $(SRC_DIR)/%.c,$(DEP_DIR)/%.d,$(SRC))
+TOBJ := $(patsubst $(TEST_DIR)/%.c,$(TEST_OBJ_DIR)/%.o,$(TSRC))
+TDEP := $(patsubst $(TEST_DIR)/%.c,$(DEP_DIR)/%.d,$(TSRC))
+
+INCLUDE = -I$(INC_DIR)
+
+DIRS = $(OBJ_DIR) $(DEP_DIR) $(BIN_DIR) $(TMP_DIR) $(TEST_OBJ_DIR) $(INCLUDE_OUT)
+
+.PHONY: all clean fclean re install uninstall dirs criterion
+
+# Criterion test framework (precompiled distribution)
+# We download the prebuilt tar.xz and extract it into the target install dir
+CRITERION_VERSION = 2.4.2
+CRITERION_TARBALL_URL = https://github.com/Snaipe/Criterion/releases/download/v$(CRITERION_VERSION)/criterion-$(CRITERION_VERSION)-linux-x86_64.tar.xz
+CRITERION_MODULE_DIR = $(ORIGIN_DIR)/$(TARGET)/criterion
+CRITERION_TMP_DIR = $(CRITERION_MODULE_DIR)/tmp
+CRITERION_TARBALL = $(CRITERION_TMP_DIR)/criterion-$(CRITERION_VERSION)-linux-x86_64.tar.xz
+CRITERION_INSTALL_DIR = $(CRITERION_MODULE_DIR)/bin
+
+all: dirs $(SHARED) $(STATIC)
+
+-include $(DEP)
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(@D) $(dir $(DEP_DIR)/$*.d)
+	$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/$*.d -c $< -o $@ $(INCLUDE) -D 'VERSION=$(VERSION)'
+
+$(TEST_OBJ_DIR)/%.o: $(TEST_DIR)/%.c
+	@mkdir -p $(@D) $(dir $(DEP_DIR)/$*.d)
+	$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/$*.d -c $< -o $@ $(INCLUDE) -I$(CRITERION_INSTALL_DIR)/include
+
+$(NAME): $(OBJ)  $(INCLUDED_FILES)
+	@mkdir -p "$(@D)"
+	$(CC) -o "$(BIN_DIR)/$@" $(OBJ) $(LDFLAGS) -D 'VERSION=$(VERSION)'
+# Then we link root of the directory to the binary for easier access, e.g. ./cub3d
+	@ln -sf "$(BIN_DIR)/$@" "./$@"
+
+dirs:
+	@$(foreach d, $(DIRS), mkdir -p "$(d)";)
+
+clean:
+	$(RM) -r $(OBJ_DIR) $(DEP_DIR)
+
+fclean: clean
+	$(RM) -r $(ORIGIN_DIR)
+	$(RM) ./$(NAME)
+
+re: fclean all
+
+# Download and extract precompiled Criterion for running tests
+criterion: $(CRITERION_INSTALL_DIR)
+
+$(CRITERION_INSTALL_DIR):
+	@echo "Preparing Criterion v$(CRITERION_VERSION) in $(CRITERION_INSTALL_DIR)"
+	@mkdir -p "$(CRITERION_TMP_DIR)" "$(CRITERION_INSTALL_DIR)"
+	@# Download tarball if missing
+	@if [ ! -f "$(CRITERION_TARBALL)" ]; then \
+		echo "Downloading $(CRITERION_TARBALL_URL) ..."; \
+		if command -v curl >/dev/null 2>&1; then \
+			curl -L -o "$(CRITERION_TARBALL)" "$(CRITERION_TARBALL_URL)"; \
+		else \
+			wget -O "$(CRITERION_TARBALL)" "$(CRITERION_TARBALL_URL)"; \
+		fi; \
+	fi
+	@# Extract into the install dir (overwrite if necessary)
+	@echo "Extracting $(CRITERION_TARBALL) to $(CRITERION_INSTALL_DIR) ...";
+	@tar -xJf "$(CRITERION_TARBALL)" -C "$(CRITERION_INSTALL_DIR)" --strip-components=1
+	@echo "Criterion installed to $(CRITERION_INSTALL_DIR)"
+
+test: criterion all $(TOBJ) $(TDEP)
+	@echo "Linking test units with Criterion..."
+	$(CC) -o $(BIN_DIR)/$(NAME).test $(TOBJ) $(filter-out $(OBJ_DIR)/main.o,$(OBJ)) -L$(CRITERION_INSTALL_DIR)/lib -lcriterion $(LDFLAGS) -lXtst
+
+run_test/%:
+	@echo "Running tests in virtual X11 display ($*-bit depth)..."
+	@export DISPLAY_DEPTH=$* && LD_LIBRARY_PATH=$(BIN_DIR):$(CRITERION_INSTALL_DIR)/lib xvfb-run --auto-servernum --server-args='-screen 0 1024x768x$*' $(BIN_DIR)/$(NAME).test --verbose
+
+run_tests: test
+	$(MAKE) run_test/24
+	@echo "All tests completed."
+
+examples: all
+	@echo "Building all examples..."
+	@$(foreach dir, $(wildcard examples/*), \
+		echo "Building example $(dir) ..."; \
+		$(MAKE) -C $(dir) all MODE="$(MODE)"; )
+	@echo "All examples built successfully!"
+
+# Run example by name examples/%
+examples/%: all
+	@echo "Building example $* ..."
+	$(MAKE) -C examples/$* all
+	$(MAKE) -C examples/$* run
+
+format:
+	@echo "Formatting source files with clang-format..."
+	@find $(SRC_DIR) $(INC_DIR) $(TEST_DIR) -type f \( -name '*.c' -o -name '*.h' \) -exec clang-format -i {} +
+	@echo "Source files formatted."
+
+compile_commands.json: Makefile $(SRC) $(INC)
+	@echo "Generating compile_commands.json ..."
+	@bear -- $(MAKE) fclean all CC=cc
+	@echo "compile_commands.json generated."
