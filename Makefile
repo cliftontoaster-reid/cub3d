@@ -76,23 +76,24 @@ CRITERION_TMP_DIR = $(CRITERION_MODULE_DIR)/tmp
 CRITERION_TARBALL = $(CRITERION_TMP_DIR)/criterion-$(CRITERION_VERSION)-linux-x86_64.tar.xz
 CRITERION_INSTALL_DIR = $(CRITERION_MODULE_DIR)/bin
 
-all: dirs $(SHARED) $(STATIC)
+all: dirs $(NAME)
 
 -include $(DEP)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(@D) $(dir $(DEP_DIR)/$*.d)
 	$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/$*.d -c $< -o $@ $(INCLUDE) -D 'VERSION=$(VERSION)'
+	@echo "Compiled $< -> $@"
 
 $(TEST_OBJ_DIR)/%.o: $(TEST_DIR)/%.c
 	@mkdir -p $(@D) $(dir $(DEP_DIR)/$*.d)
 	$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/$*.d -c $< -o $@ $(INCLUDE) -I$(CRITERION_INSTALL_DIR)/include
+	@echo "Compiled test $< -> $@"
 
 $(NAME): $(OBJ)  $(INCLUDED_FILES)
 	@mkdir -p "$(@D)"
-	$(CC) -o "$(BIN_DIR)/$@" $(OBJ) $(LDFLAGS) -D 'VERSION=$(VERSION)'
-# Then we link root of the directory to the binary for easier access, e.g. ./cub3d
-	@ln -sf "$(BIN_DIR)/$@" "./$@"
+	$(CC) -o "$@" $(OBJ) $(LDFLAGS) -D 'VERSION=$(VERSION)'
+	@echo "Linked $(NAME)"
 
 dirs:
 	@$(foreach d, $(DIRS), mkdir -p "$(d)";)
