@@ -6,14 +6,15 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 15:47:52 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/29 16:28:10 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/10/30 13:11:14 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include <unistd.h>
 //
-#include "utils/getline.h"
+#include "utils/alloc.h"
+#include "utils/reader.h"
 
 static inline ssize_t	get_size(const t_buffer *buffer, ssize_t newline_pos)
 {

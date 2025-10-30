@@ -1,26 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   buffer_free.c                                      :+:      :+:    :+:   */
+/*   movemory.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/29 15:46:14 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/29 16:29:14 by lfiorell@st      ###   ########.fr       */
+/*   Created: 2025/10/29 16:28:32 by lfiorell@st       #+#    #+#             */
+/*   Updated: 2025/10/30 13:22:36 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-//
-#include "utils/getline.h"
+#include "utils/reader.h"
 
-void	buffer_free(t_buffer *buffer)
+void	movemory(void *dest, const void *src, size_t n)
 {
-	if (buffer->data)
+	unsigned char		*d;
+	const unsigned char	*s;
+
+	d = (unsigned char *)dest;
+	s = (const unsigned char *)src;
+	if (d < s)
 	{
-		free(buffer->data);
-		buffer->data = NULL;
+		while (n--)
+			*d++ = *s++;
 	}
-	buffer->size = 0;
-	buffer->capacity = 0;
+	else if (d > s)
+	{
+		d += n;
+		s += n;
+		while (n--)
+			*--d = *--s;
+	}
 }

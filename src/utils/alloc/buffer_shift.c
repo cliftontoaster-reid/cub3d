@@ -6,11 +6,11 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 16:12:52 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/29 16:29:29 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/10/30 13:10:49 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils/getline.h"
+#include "utils/alloc.h"
 
 void	buffer_shift(t_buffer *buffer, size_t shift)
 {

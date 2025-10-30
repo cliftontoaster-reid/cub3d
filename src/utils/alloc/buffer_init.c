@@ -1,27 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   buffer_is_line.c                                   :+:      :+:    :+:   */
+/*   buffer_init.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/29 16:25:36 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/29 16:25:39 by lfiorell@st      ###   ########.fr       */
+/*   Created: 2025/10/29 15:44:31 by lfiorell@st       #+#    #+#             */
+/*   Updated: 2025/10/30 13:10:43 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils/getline.h"
+#include "utils/alloc.h"
 
-ssize_t	buffer_is_line(const t_buffer *buffer)
+void	buffer_init(t_buffer *buffer)
 {
-	ssize_t	i;
-
-	i = 0;
-	while (i < (ssize_t)buffer->size)
-	{
-		if (buffer->data[i] == '\n')
-			return (i);
-		i++;
-	}
-	return (-1);
+	buffer->data = NULL;
+	buffer->size = 0;
+	buffer->capacity = 0;
 }

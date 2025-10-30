@@ -1,34 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   movemory.c                                         :+:      :+:    :+:   */
+/*   buffer_is_line.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/29 16:28:32 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/29 16:28:39 by lfiorell@st      ###   ########.fr       */
+/*   Created: 2025/10/29 16:25:36 by lfiorell@st       #+#    #+#             */
+/*   Updated: 2025/10/30 13:10:48 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils/getline.h"
+#include "utils/alloc.h"
 
-inline void	movemory(void *dest, const void *src, size_t n)
+ssize_t	buffer_is_line(const t_buffer *buffer)
 {
-	unsigned char		*d;
-	const unsigned char	*s;
+	ssize_t	i;
 
-	d = (unsigned char *)dest;
-	s = (const unsigned char *)src;
-	if (d < s)
+	i = 0;
+	while (i < (ssize_t)buffer->size)
 	{
-		while (n--)
-			*d++ = *s++;
+		if (buffer->data[i] == '\n')
+			return (i);
+		i++;
 	}
-	else if (d > s)
-	{
-		d += n;
-		s += n;
-		while (n--)
-			*--d = *--s;
-	}
+	return (-1);
 }

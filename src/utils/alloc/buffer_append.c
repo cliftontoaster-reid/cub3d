@@ -6,13 +6,13 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 15:44:56 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/29 16:28:50 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/10/30 13:10:41 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 //
-#include "utils/getline.h"
+#include "utils/alloc.h"
 
 void	buffer_append(t_buffer *buffer, const char *data, size_t len)
 {
