@@ -1,27 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   buffer_to_cstring.c                                :+:      :+:    :+:   */
+/*   is_inbounds.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/30 13:15:59 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/30 15:00:02 by lfiorell@st      ###   ########.fr       */
+/*   Created: 2025/10/30 13:46:53 by lfiorell@st       #+#    #+#             */
+/*   Updated: 2025/10/30 14:59:26 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include <stdbool.h>
 //
-#include "utils/alloc.h"
+#include "map/table.h"
 
-char	*buffer_to_cstring(const t_buffer *buffer)
+bool	is_inbounds(t_map *map, int x, int y)
 {
-	char	*cstring;
-
-	cstring = (char *)malloc(buffer->size + 1);
-	if (!cstring)
-		return (NULL);
-	movemory(cstring, buffer->data, buffer->size);
-	cstring[buffer->size] = '\0';
-	return (cstring);
+	if (x < 0 || x >= map->width)
+		return (false);
+	if (y < 0 || y >= map->height)
+		return (false);
+	return (true);
 }

@@ -65,6 +65,23 @@ INCLUDE = -I$(INC_DIR)
 
 DIRS = $(OBJ_DIR) $(DEP_DIR) $(BIN_DIR) $(TMP_DIR) $(TEST_OBJ_DIR) $(INCLUDE_OUT)
 
+# if colours
+ifeq ($(shell tput colors 2>/dev/null),256)
+	RESET = \033[0m
+	BOLD = \033[1m
+	RED = \033[31m
+	GREEN = \033[32m
+	YELLOW = \033[33m
+	BLUE = \033[34m
+else
+	RESET =
+	BOLD =
+	RED =
+	GREEN =
+	YELLOW =
+	BLUE =
+endif
+
 .PHONY: all clean fclean re install uninstall dirs criterion
 
 # Criterion test framework (precompiled distribution)
@@ -82,28 +99,28 @@ all: dirs $(NAME)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(@D) $(dir $(DEP_DIR)/$*.d)
-	$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/$*.d -c $< -o $@ $(INCLUDE) -D 'VERSION=$(VERSION)'
-	@echo "Compiled $< -> $@"
+	@$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/$*.d -c $< -o $@ $(INCLUDE) -D 'VERSION="$(VERSION)"'
+	@echo -e "$(BOLD)Compiled$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/$*.d$(RESET)"
 
 $(TEST_OBJ_DIR)/%.o: $(TEST_DIR)/%.c
 	@mkdir -p $(@D) $(dir $(DEP_DIR)/$*.d)
-	$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/$*.d -c $< -o $@ $(INCLUDE) -I$(CRITERION_INSTALL_DIR)/include
-	@echo "Compiled test $< -> $@"
+	@$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/$*.d -c $< -o $@ $(INCLUDE) -I$(CRITERION_INSTALL_DIR)/include
+	@echo -e "$(BOLD)Compiled$(RESET) $(YELLOW)test$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/$*.d$(RESET)"
 
 $(NAME): $(OBJ)  $(INCLUDED_FILES)
 	@mkdir -p "$(@D)"
-	$(CC) -o "$@" $(OBJ) $(LDFLAGS) -D 'VERSION=$(VERSION)'
-	@echo "Linked $(NAME)"
+	@$(CC) -o "$@" $(OBJ) $(LDFLAGS) -D 'VERSION=\"$(VERSION)\"'
+	@echo -e "$(BOLD)Linked$(RESET) $(NAME)"
 
 dirs:
 	@$(foreach d, $(DIRS), mkdir -p "$(d)";)
 
 clean:
-	$(RM) -r $(OBJ_DIR) $(DEP_DIR)
+	@$(RM) -r $(OBJ_DIR) $(DEP_DIR)
 
 fclean: clean
-	$(RM) -r $(ORIGIN_DIR)
-	$(RM) ./$(NAME)
+	@$(RM) -r $(ORIGIN_DIR)
+	@$(RM) ./$(NAME)
 
 re: fclean all
 

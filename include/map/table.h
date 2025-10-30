@@ -1,27 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   buffer_to_cstring.c                                :+:      :+:    :+:   */
+/*   table.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/30 13:15:59 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/30 15:00:02 by lfiorell@st      ###   ########.fr       */
+/*   Created: 2025/10/30 13:32:14 by lfiorell@st       #+#    #+#             */
+/*   Updated: 2025/10/30 14:59:15 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-//
-#include "utils/alloc.h"
+#pragma once
 
-char	*buffer_to_cstring(const t_buffer *buffer)
+#include <stdbool.h>
+
+typedef struct s_map
 {
-	char	*cstring;
+	int		width;
+	int		height;
+	char	**data;
+}			t_map;
 
-	cstring = (char *)malloc(buffer->size + 1);
-	if (!cstring)
-		return (NULL);
-	movemory(cstring, buffer->data, buffer->size);
-	cstring[buffer->size] = '\0';
-	return (cstring);
-}
+t_map		*create_map(int width, int height);
+void		free_map(t_map *map);
+bool		is_inbounds(t_map *map, int x, int y);
+char		get_map_cell(t_map *map, int x, int y);
+void		set_map_cell(t_map *map, int x, int y, char value);
+
+t_map		*map_from_str(const char *content);

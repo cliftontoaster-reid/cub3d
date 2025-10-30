@@ -1,27 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   buffer_to_cstring.c                                :+:      :+:    :+:   */
+/*   free_map.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/30 13:15:59 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/30 15:00:02 by lfiorell@st      ###   ########.fr       */
+/*   Created: 2025/10/30 13:39:11 by lfiorell@st       #+#    #+#             */
+/*   Updated: 2025/10/30 14:55:04 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 //
-#include "utils/alloc.h"
+#include "map/table.h"
 
-char	*buffer_to_cstring(const t_buffer *buffer)
+void	free_map(t_map *map)
 {
-	char	*cstring;
+	int	i;
 
-	cstring = (char *)malloc(buffer->size + 1);
-	if (!cstring)
-		return (NULL);
-	movemory(cstring, buffer->data, buffer->size);
-	cstring[buffer->size] = '\0';
-	return (cstring);
+	if (!map)
+		return ;
+	i = 0;
+	while (i < map->height)
+	{
+		free(map->data[i]);
+		i++;
+	}
+	free(map->data);
+	free(map);
 }
