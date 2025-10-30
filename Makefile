@@ -128,25 +128,22 @@ re: fclean all
 criterion: $(CRITERION_INSTALL_DIR)
 
 $(CRITERION_INSTALL_DIR):
-	@echo "Preparing Criterion v$(CRITERION_VERSION) in $(CRITERION_INSTALL_DIR)"
 	@mkdir -p "$(CRITERION_TMP_DIR)" "$(CRITERION_INSTALL_DIR)"
-	@# Download tarball if missing
+	@# Download tarball if missing, silently
 	@if [ ! -f "$(CRITERION_TARBALL)" ]; then \
-		echo "Downloading $(CRITERION_TARBALL_URL) ..."; \
 		if command -v curl >/dev/null 2>&1; then \
-			curl -L -o "$(CRITERION_TARBALL)" "$(CRITERION_TARBALL_URL)"; \
+			curl -L -o "$(CRITERION_TARBALL)" "$(CRITERION_TARBALL_URL)" > /dev/null 2>&1; \
 		else \
-			wget -O "$(CRITERION_TARBALL)" "$(CRITERION_TARBALL_URL)"; \
+			wget -O "$(CRITERION_TARBALL)" "$(CRITERION_TARBALL_URL)" > /dev/null 2>&1; \
 		fi; \
 	fi
 	@# Extract into the install dir (overwrite if necessary)
-	@echo "Extracting $(CRITERION_TARBALL) to $(CRITERION_INSTALL_DIR) ...";
 	@tar -xJf "$(CRITERION_TARBALL)" -C "$(CRITERION_INSTALL_DIR)" --strip-components=1
-	@echo "Criterion installed to $(CRITERION_INSTALL_DIR)"
+	@echo -e "$(BOLD)Criterion v$(CRITERION_VERSION) installed to:$(RESET) $(GREEN)$(CRITERION_INSTALL_DIR)$(RESET)"
 
 test: criterion all $(TOBJ) $(TDEP)
-	@echo "Linking test units with Criterion..."
-	$(CC) -o $(BIN_DIR)/$(NAME).test $(TOBJ) $(filter-out $(OBJ_DIR)/main.o,$(OBJ)) -L$(CRITERION_INSTALL_DIR)/lib -lcriterion $(LDFLAGS) -lXtst
+	@$(CC) -o $(BIN_DIR)/$(NAME).test $(TOBJ) $(filter-out $(OBJ_DIR)/main.o,$(OBJ)) -L$(CRITERION_INSTALL_DIR)/lib -lcriterion $(LDFLAGS) -lXtst
+	@echo -e "$(BOLD)Linked test executable:$(RESET) $(GREEN)$(BIN_DIR)/$(NAME).test$(RESET)"
 
 run_test/%:
 	@echo "Running tests in virtual X11 display ($*-bit depth)..."

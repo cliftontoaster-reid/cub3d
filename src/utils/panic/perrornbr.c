@@ -1,28 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   panic.c                                            :+:      :+:    :+:   */
+/*   perrornbr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/30 13:51:19 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/30 16:57:34 by lfiorell@st      ###   ########.fr       */
+/*   Created: 2025/10/30 16:56:40 by lfiorell@st       #+#    #+#             */
+/*   Updated: 2025/10/30 16:56:50 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-//
 #include "utils/panic.h"
+#include <stdio.h>
 
-void	panic(const char *message, const char *file, int line)
+void	perrornbr(int n)
 {
-	perror("An error (");
-	perror(message);
-	perror(") occurred at : ");
-	perror(file);
-	perror(":");
-	perrornbr(line);
-	perror(".\n");
-	abort();
+	char	result[12];
+	int		i;
+
+	i = 0;
+	while (n >= 0)
+	{
+		result[i++] = (n % 10) + '0';
+		n /= 10;
+		if (n == 0)
+			break ;
+	}
+	result[i] = '\0';
+	perror(result);
 }
