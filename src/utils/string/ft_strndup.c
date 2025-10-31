@@ -1,34 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   split_first.c                                      :+:      :+:    :+:   */
+/*   ft_strndup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/30 16:45:24 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/30 16:57:48 by lfiorell@st      ###   ########.fr       */
+/*   Created: 2025/10/31 13:00:00 by lfiorell@st       #+#    #+#             */
+/*   Updated: 2025/10/31 11:19:53 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils/alloc.h"
 #include "utils/string.h"
+#include <stddef.h>
 #include <stdlib.h>
-#include <sys/types.h>
 
-bool	split_first(const char *s, char delimiter, char **out)
+char	*ft_strndup(const char *s, size_t n)
 {
-	const char	*delimiter_pos;
-	size_t		pos;
+	char	*dup;
+	size_t	len;
 
-	if (!s || !out)
-		return (false);
-	delimiter_pos = ft_strchr(s, delimiter);
-	if (!delimiter_pos)
-		return (false);
-	pos = delimiter_pos - s;
-	out[0] = ft_strndup(s, pos);
-	if (!out[0])
-		return (false);
-	out[1] = (char *)delimiter_pos + 1;
-	return (true);
+	len = 0;
+	while (s[len] && len < n)
+		len++;
+	dup = (char *)malloc(sizeof(char) * (len + 1));
+	if (!dup)
+		return (NULL);
+	movemory(dup, s, len);
+	dup[len] = '\0';
+	return (dup);
 }

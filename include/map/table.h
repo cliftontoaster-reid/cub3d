@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:32:14 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/30 16:38:24 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/10/31 10:59:14 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,3 +47,5 @@ void				set_map_cell(t_map *map, int x, int y, char value);
 
 t_map				*map_from_str(const char *content);
 bool				parse_options(t_map *map, const char **lines, int count);
+
+t_map				*read_map(const char *fullcontent);

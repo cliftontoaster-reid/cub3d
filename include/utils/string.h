@@ -6,13 +6,22 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 15:35:40 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/30 16:45:49 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/10/31 11:22:37 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <stdbool.h>
+#include <sys/types.h>
 
-char	*findlast_emptyline(const char *s);
-bool	split_first(const char *s, char delimiter, char **out);
+char		*findlast_emptyline(const char *s);
+bool		split_first(const char *s, char delimiter, char **out);
+
+const char	**split_lines(const char *s, int *out_count);
+void		free_string_array(const char **arr, int count);
+
+size_t		ft_strlen(const char *s);
+char		*ft_strchr(const char *s, int c);
+char		*ft_strndup(const char *s, size_t n);
+char		*ft_strdup(const char *s);

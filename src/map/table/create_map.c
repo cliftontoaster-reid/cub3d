@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:39:11 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/30 13:42:21 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/10/31 10:53:25 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,19 @@ static bool	init_line(char **line, int width)
 		j++;
 	}
 	return (true);
+}
+
+static void	init_options(t_map *map)
+{
+	map->player_start_x = -1;
+	map->player_start_y = -1;
+	map->player_start_dir = 0;
+	map->north_wall_texture = NULL;
+	map->south_wall_texture = NULL;
+	map->west_wall_texture = NULL;
+	map->east_wall_texture = NULL;
+	map->floor_color = -1;
+	map->ceiling_color = -1;
 }
 
 t_map	*create_map(int width, int height)
@@ -56,5 +69,6 @@ t_map	*create_map(int width, int height)
 			return (NULL);
 		}
 	}
+	init_options(map);
 	return (map);
 }
