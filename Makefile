@@ -82,7 +82,15 @@ else
 	BLUE =
 endif
 
-.PHONY: all clean fclean re install uninstall dirs criterion
+.PHONY: all clean fclean re install uninstall dirs criterion libft
+
+# libft library (cloned from git and built with make)
+LIBFT_REPO_URL = https://github.com/cliftontoaster-reid/libft.git
+LIBFT_MODULE_DIR = $(ORIGIN_DIR)/$(TARGET)/libft
+LIBFT_SRC_DIR = $(LIBFT_MODULE_DIR)/src
+LIBFT_ARCHIVE = $(LIBFT_MODULE_DIR)/libft.a
+LIBFT_INCLUDE_DIR = $(LIBFT_MODULE_DIR)
+INCLUDE += -I$(LIBFT_INCLUDE_DIR)
 
 # Criterion test framework (precompiled distribution)
 # We download the prebuilt tar.xz and extract it into the target install dir
@@ -93,23 +101,23 @@ CRITERION_TMP_DIR = $(CRITERION_MODULE_DIR)/tmp
 CRITERION_TARBALL = $(CRITERION_TMP_DIR)/criterion-$(CRITERION_VERSION)-linux-x86_64.tar.xz
 CRITERION_INSTALL_DIR = $(CRITERION_MODULE_DIR)/bin
 
-all: dirs $(NAME)
+all: dirs libft $(NAME)
 
 -include $(DEP)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c libft
 	@mkdir -p $(@D) $(dir $(DEP_DIR)/$*.d)
 	@$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/$*.d -c $< -o $@ $(INCLUDE) -D 'VERSION="$(VERSION)"'
 	@echo -e "$(BOLD)Compiled$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/$*.d$(RESET)"
 
-$(TEST_OBJ_DIR)/%.o: $(TEST_DIR)/%.c
+$(TEST_OBJ_DIR)/%.o: $(TEST_DIR)/%.c libft
 	@mkdir -p $(@D) $(dir $(DEP_DIR)/$*.d)
 	@$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/$*.d -c $< -o $@ $(INCLUDE) -I$(CRITERION_INSTALL_DIR)/include
 	@echo -e "$(BOLD)Compiled$(RESET) $(YELLOW)test$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/$*.d$(RESET)"
 
 $(NAME): $(OBJ)  $(INCLUDED_FILES)
 	@mkdir -p "$(@D)"
-	@$(CC) -o "$@" $(OBJ) $(LDFLAGS) -D 'VERSION=\"$(VERSION)\"'
+	@$(CC) -o "$@" $(OBJ) $(LIBFT_ARCHIVE) $(LDFLAGS) -D 'VERSION=\"$(VERSION)\"'
 	@echo -e "$(BOLD)Linked$(RESET) $(NAME)"
 
 dirs:
@@ -140,6 +148,19 @@ $(CRITERION_INSTALL_DIR):
 	@# Extract into the install dir (overwrite if necessary)
 	@tar -xJf "$(CRITERION_TARBALL)" -C "$(CRITERION_INSTALL_DIR)" --strip-components=1
 	@echo -e "$(BOLD)Criterion v$(CRITERION_VERSION) installed to:$(RESET) $(GREEN)$(CRITERION_INSTALL_DIR)$(RESET)"
+
+# Clone and build libft library
+libft: $(LIBFT_ARCHIVE)
+
+$(LIBFT_ARCHIVE):
+	@mkdir -p "$(LIBFT_MODULE_DIR)"
+	@# Clone libft if not already present
+	@if [ ! -d "$(LIBFT_MODULE_DIR)/.git" ]; then \
+		git clone "$(LIBFT_REPO_URL)" "$(LIBFT_MODULE_DIR)" > /dev/null 2>&1; \
+	fi
+	@# Build libft with make
+	@$(MAKE) -C "$(LIBFT_MODULE_DIR)" all OBJ_DIR="$(LIBFT_MODULE_DIR)/target" CACHE_DIR="$(LIBFT_MODULE_DIR)/cache"
+	@echo -e "$(BOLD)Built libft:$(RESET) $(GREEN)$(LIBFT_ARCHIVE)$(RESET)"
 
 test: criterion all $(TOBJ) $(TDEP)
 	@$(CC) -o $(BIN_DIR)/$(NAME).test $(TOBJ) $(filter-out $(OBJ_DIR)/main.o,$(OBJ)) -L$(CRITERION_INSTALL_DIR)/lib -lcriterion $(LDFLAGS) -lXtst
