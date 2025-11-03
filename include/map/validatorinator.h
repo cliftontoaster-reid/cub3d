@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 14:14:31 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/03 14:16:43 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/03 15:21:20 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,3 +34,4 @@ t_floodfillinator	*init_floodfillinator(t_map *map);
 bool				run_floodfillinator(t_floodfillinator *ffi,
 						t_pointinator start);
 void				free_floodfillinator(t_floodfillinator *ffi);
+bool				is_map_string_validinator(const char *map_str);

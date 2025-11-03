@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:27:10 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/03 15:07:29 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/03 15:21:32 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,15 +116,9 @@ t_map	*map_from_str(const char *content)
 	int		line_count;
 	int		line_width;
 	t_map	*map;
-	size_t	i;
 
-	i = 0;
-	while (content[i] != '\0')
-	{
-		if (!strchr(INCLUSIVE_MAP_CHARS "\n", content[i]))
-			return (NULL);
-		i++;
-	}
+	if (is_map_string_validinator(content) == false)
+		return (NULL);
 	line_count = count_lines(content);
 	line_width = max_width(content);
 	map = create_map(line_width, line_count);
