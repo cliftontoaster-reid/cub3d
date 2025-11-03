@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 16:38:49 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/03 14:51:02 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/03 15:01:36 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ static bool	isemptyline(const char *line)
 		return (true);
 	while (*line)
 	{
-		if (*line != ' ' && *line != '\t' && *line != '\n')
+		if (*line != MAP_CHAR_THE_DARK_EMPTY_VOID_OF_SPACE && *line != '\t'
+			&& *line != '\n')
 			return (false);
 		line++;
 	}
@@ -121,7 +122,7 @@ int	parse_rgb_value(const char *value)
 
 static void	setoption(t_map *map, const char *option, const char *value)
 {
-	while (*value == ' ' || *value == '\t')
+	while (*value == MAP_CHAR_THE_DARK_EMPTY_VOID_OF_SPACE || *value == '\t')
 		value++;
 	if (strcmp(option, "NO") == 0)
 		map->north_wall_texture = strdup(value);
@@ -145,7 +146,8 @@ bool	parse_options(t_map *map, const char **lines, int count)
 	i = 0;
 	while (i < count)
 	{
-		if (!isemptyline(lines[i]) && split_first(lines[i], ' ', parts))
+		if (!isemptyline(lines[i]) && split_first(lines[i],
+				MAP_CHAR_THE_DARK_EMPTY_VOID_OF_SPACE, parts))
 		{
 			if (!isvalid_option(parts[0]))
 				return (false);

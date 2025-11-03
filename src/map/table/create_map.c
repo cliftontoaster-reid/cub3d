@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:39:11 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/01 10:58:12 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/03 15:00:38 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static bool	init_line(char **line, int width)
 	j = 0;
 	while (j < width)
 	{
-		(*line)[j] = ' ';
+		(*line)[j] = MAP_CHAR_THE_DARK_EMPTY_VOID_OF_SPACE;
 		j++;
 	}
 	(*line)[j] = '\0';

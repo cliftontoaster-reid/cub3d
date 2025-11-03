@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:27:10 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/30 14:42:05 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/03 14:59:39 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,32 @@ static void	copy_data(t_map *map, const char *content)
 	}
 }
 
+static void	find_player_start(t_map *map)
+{
+	int		x;
+	int		y;
+	char	cell;
+
+	y = 0;
+	while (y < map->height)
+	{
+		x = 0;
+		while (x < map->width)
+		{
+			cell = map->data[y][x];
+			if (strchr(MAP_CHAR_PLAYER, cell))
+			{
+				map->player_start.x = x;
+				map->player_start.y = y;
+				map->player_start_dir = cell;
+				return ;
+			}
+			x++;
+		}
+		y++;
+	}
+}
+
 t_map	*map_from_str(const char *content)
 {
 	int		line_count;
@@ -97,5 +123,6 @@ t_map	*map_from_str(const char *content)
 	if (!map)
 		return (NULL);
 	copy_data(map, content);
+	find_player_start(map);
 	return (map);
 }

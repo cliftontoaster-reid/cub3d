@@ -6,13 +6,20 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:32:14 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/31 10:59:14 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/03 14:58:25 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+#include "map/validatorinator.h"
 #include <stdbool.h>
+#include <sys/types.h>
+
+#define MAP_CHAR_WALL '1'
+#define MAP_CHAR_EMPTY '0'
+#define MAP_CHAR_THE_DARK_EMPTY_VOID_OF_SPACE ' '
+#define MAP_CHAR_PLAYER "NSEW"
 
 typedef enum e_player_dir
 {
@@ -28,8 +35,7 @@ typedef struct s_map
 	int				height;
 	char			**data;
 
-	int				player_start_x;
-	int				player_start_y;
+	t_pointinator	player_start;
 	t_player_dir	player_start_dir;
 	char			*north_wall_texture;
 	char			*south_wall_texture;
