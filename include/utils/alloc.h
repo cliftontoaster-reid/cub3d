@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 18:48:00 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/11/03 13:50:34 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/03 14:00:23 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ typedef struct s_vec
 
 void		vec_init(t_vec *vec, size_t elem_size);
 bool		vec_push_back(t_vec *vec, const void *elem);
+bool		vec_push_back_absent(t_vec *vec, const void *elem);
+bool		vec_expand_capacity(t_vec *vec, size_t min_capacity);
 void		*vec_get(const t_vec *vec, size_t index);
 void		*vec_pop_back(t_vec *vec);
 void		vec_free(t_vec *vec);
