@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:32:14 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/03 14:58:25 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/03 15:06:54 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,12 @@
 #include <stdbool.h>
 #include <sys/types.h>
 
-#define MAP_CHAR_WALL '1'
-#define MAP_CHAR_EMPTY '0'
-#define MAP_CHAR_THE_DARK_EMPTY_VOID_OF_SPACE ' '
-#define MAP_CHAR_PLAYER "NSEW"
+#define RACIST_MAP_CHAR_WALL '1'
+#define RACIST_MAP_CHAR_EMPTY '0'
+#define RACIST_MAP_CHAR_THE_DARK_EMPTY_VOID_OF_SPACE ' '
+#define RACIST_MAP_CHAR_PLAYER "NSEW"
+
+#define INCLUSIVE_MAP_CHARS "01NSEW"
 
 typedef enum e_player_dir
 {

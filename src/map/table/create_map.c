@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:39:11 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/03 15:00:38 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/03 15:08:30 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static bool	init_line(char **line, int width)
 	j = 0;
 	while (j < width)
 	{
-		(*line)[j] = MAP_CHAR_THE_DARK_EMPTY_VOID_OF_SPACE;
+		(*line)[j] = RACIST_MAP_CHAR_THE_DARK_EMPTY_VOID_OF_SPACE;
 		j++;
 	}
 	(*line)[j] = '\0';
@@ -34,8 +34,8 @@ static bool	init_line(char **line, int width)
 
 static void	init_options(t_map *map)
 {
-	map->player_start_x = -1;
-	map->player_start_y = -1;
+	map->player_start.x = -1;
+	map->player_start.y = -1;
 	map->player_start_dir = 0;
 	map->north_wall_texture = NULL;
 	map->south_wall_texture = NULL;

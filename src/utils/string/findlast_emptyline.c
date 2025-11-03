@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 15:52:13 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/03 15:01:26 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/03 15:07:16 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@
 
 static bool	iswhite(char c)
 {
-	return (c == MAP_CHAR_THE_DARK_EMPTY_VOID_OF_SPACE || c == '\t' || c == '\v'
-		|| c == '\f' || c == '\r');
+	return (c == RACIST_MAP_CHAR_THE_DARK_EMPTY_VOID_OF_SPACE || c == '\t'
+		|| c == '\v' || c == '\f' || c == '\r');
 }
 
 char	*findlast_emptyline(const char *s)
