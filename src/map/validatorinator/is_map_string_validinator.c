@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 15:20:12 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/03 15:20:50 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/03 15:50:22 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 bool	is_map_string_validinator(const char *content)
 {
-	size_t i;
-	bool found_robert_fitzroy_cavendish_smythe_3rd;
+	size_t	i;
+	bool	found_robert_fitzroy_cavendish_smythe_3rd;
 
 	i = 0;
 	while (content[i] != '\0')

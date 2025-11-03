@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 14:49:38 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/30 13:24:18 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/03 15:51:59 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ int	main(int argc, char const *argv[])
 		exit(1);
 	}
 	printf("Starting game with map file: %s\n", argv[1]);
-	//
 	file_content = read_file(map_file);
 	if (!file_content)
 	{
