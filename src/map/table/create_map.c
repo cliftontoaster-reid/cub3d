@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:39:11 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/31 10:53:25 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/01 10:58:12 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static bool	init_line(char **line, int width)
 {
 	int	j;
 
-	*line = (char *)malloc(sizeof(char) * (width));
+	*line = (char *)malloc(sizeof(char) * (width + 1));
 	if (!*line)
 		return (false);
 	j = 0;
@@ -28,6 +28,7 @@ static bool	init_line(char **line, int width)
 		(*line)[j] = ' ';
 		j++;
 	}
+	(*line)[j] = '\0';
 	return (true);
 }
 

@@ -101,16 +101,16 @@ CRITERION_TMP_DIR = $(CRITERION_MODULE_DIR)/tmp
 CRITERION_TARBALL = $(CRITERION_TMP_DIR)/criterion-$(CRITERION_VERSION)-linux-x86_64.tar.xz
 CRITERION_INSTALL_DIR = $(CRITERION_MODULE_DIR)/bin
 
-all: dirs libft $(NAME)
+all: dirs $(NAME)
 
 -include $(DEP)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c libft
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c ${LIBFT_ARCHIVE}
 	@mkdir -p $(@D) $(dir $(DEP_DIR)/$*.d)
 	@$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/$*.d -c $< -o $@ $(INCLUDE) -D 'VERSION="$(VERSION)"'
 	@echo -e "$(BOLD)Compiled$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/$*.d$(RESET)"
 
-$(TEST_OBJ_DIR)/%.o: $(TEST_DIR)/%.c libft
+$(TEST_OBJ_DIR)/%.o: $(TEST_DIR)/%.c ${LIBFT_ARCHIVE}
 	@mkdir -p $(@D) $(dir $(DEP_DIR)/$*.d)
 	@$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/$*.d -c $< -o $@ $(INCLUDE) -I$(CRITERION_INSTALL_DIR)/include
 	@echo -e "$(BOLD)Compiled$(RESET) $(YELLOW)test$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/$*.d$(RESET)"
@@ -159,7 +159,7 @@ $(LIBFT_ARCHIVE):
 		git clone "$(LIBFT_REPO_URL)" "$(LIBFT_MODULE_DIR)" > /dev/null 2>&1; \
 	fi
 	@# Build libft with make
-	@$(MAKE) -C "$(LIBFT_MODULE_DIR)" all OBJ_DIR="$(LIBFT_MODULE_DIR)/target" CACHE_DIR="$(LIBFT_MODULE_DIR)/cache"
+	@$(MAKE) -C "$(LIBFT_MODULE_DIR)" all OBJ_DIR="$(LIBFT_MODULE_DIR)/target" CACHE_DIR="$(LIBFT_MODULE_DIR)/cache" CC="$(CC)" CFLAGS="$(CFLAGS)"
 	@echo -e "$(BOLD)Built libft:$(RESET) $(GREEN)$(LIBFT_ARCHIVE)$(RESET)"
 
 test: criterion all $(TOBJ) $(TDEP)
