@@ -127,6 +127,11 @@ $(NAME): $(OBJ)  $(INCLUDED_FILES)
 	@$(CC) -o "$@" $(OBJ) $(LIBFT_ARCHIVE) $(LDFLAGS) -D 'VERSION=\"$(VERSION)\"'
 	@echo -e "$(BOLD)Linked$(RESET) $(NAME)"
 
+test: criterion all $(TOBJ) $(TDEP)
+	@$(CC) -o $(BIN_DIR)/$(NAME).test $(TOBJ) $(filter-out $(OBJ_DIR)/main.o,$(OBJ)) -L$(CRITERION_INSTALL_DIR)/lib -lcriterion $(LDFLAGS) -lXtst -D 'VERSION=\"$(VERSION)\"' \
+		$(LIBFT_ARCHIVE) $(MLX_ARCHIVE)
+	@echo -e "$(BOLD)Linked test executable:$(RESET) $(GREEN)$(BIN_DIR)/$(NAME).test$(RESET)"
+
 dirs:
 	@$(foreach d, $(DIRS), mkdir -p "$(d)";)
 
@@ -179,10 +184,6 @@ $(MLX_ARCHIVE):
 	@# Build minilibx with make
 	@$(MAKE) -C "$(MLX_MODULE_DIR)" all CC="$(CC)"
 	@echo -e "$(BOLD)Built minilibx:$(RESET) $(GREEN)$(MLX_ARCHIVE)$(RESET)"
-
-test: criterion all $(TOBJ) $(TDEP)
-	@$(CC) -o $(BIN_DIR)/$(NAME).test $(TOBJ) $(filter-out $(OBJ_DIR)/main.o,$(OBJ)) -L$(CRITERION_INSTALL_DIR)/lib -lcriterion $(LDFLAGS) -lXtst
-	@echo -e "$(BOLD)Linked test executable:$(RESET) $(GREEN)$(BIN_DIR)/$(NAME).test$(RESET)"
 
 run_test/%:
 	@echo "Running tests in virtual X11 display ($*-bit depth)..."
