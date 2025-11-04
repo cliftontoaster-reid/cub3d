@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 15:47:52 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/30 13:11:14 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/04 15:19:22 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,5 +79,6 @@ ssize_t	get_next_line(int fd, char **line)
 	*line = extract_line(&buffer, newline_pos);
 	if (!*line)
 		return (buffer_free(&buffer), -1);
+	buffer_shift(&buffer, newline_pos + 1);
 	return (1);
 }

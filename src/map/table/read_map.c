@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 10:59:28 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/04 13:46:17 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/04 15:25:28 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ t_map	*read_map(const char *fullcontent)
 	if (map == NULL || !makeparse(map, options_part))
 	{
 		free_map(map);
-		free(options_part);
+		if (map == NULL)
+			free(options_part);
 		free(map_part);
 		return (NULL);
 	}

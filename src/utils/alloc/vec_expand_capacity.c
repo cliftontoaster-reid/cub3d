@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 14:01:09 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/03 14:03:29 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/04 15:15:57 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ bool	vec_expand_capacity(t_vec *vec, size_t min_capacity)
 	new_capacity = vec->capacity * 2;
 	if (new_capacity < 1)
 		new_capacity = 1;
-	while (new_capacity < min_capacity && new_capacity < vec->size)
+	while (new_capacity < min_capacity || new_capacity < vec->size)
 		new_capacity *= 2;
 	new_data = malloc(new_capacity * vec->elem_size);
 	if (!new_data)

@@ -6,26 +6,27 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 16:54:31 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/30 17:00:48 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/04 15:22:43 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include "utils/panic.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 void	todo(const char *message, const char *file, int line)
 {
-	perror("TODO: ");
+	ft_putstr_fd("TODO: ", 2);
 	if (message)
-		perror(message);
+		ft_putstr_fd(message, 2);
 	else
-		perror("No additional message provided.");
-	perror("\n");
-	perror("Location: ");
-	perror(file);
-	perror(":");
+		ft_putstr_fd("No additional message provided.", 2);
+	ft_putstr_fd("\n", 2);
+	ft_putstr_fd("Location: ", 2);
+	ft_putstr_fd(file, 2);
+	ft_putstr_fd(":", 2);
 	perrornbr(line);
-	perror(".\n");
+	ft_putstr_fd(".\n", 2);
 	abort();
 }

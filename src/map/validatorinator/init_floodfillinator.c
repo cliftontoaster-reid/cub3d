@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 14:23:11 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/04 14:31:19 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/04 15:26:00 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ t_floodfillinator	*init_floodfillinator(t_map *map)
 			ffi->width))
 	{
 		free(ffi);
+		vec_free(ffi->to_visit);
 		return (NULL);
 	}
 	return (ffi);
