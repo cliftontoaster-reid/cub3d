@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:32:14 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/04 11:17:16 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/04 13:30:29 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #define RACIST_MAP_CHAR_THE_DARK_EMPTY_VOID_OF_SPACE ' '
 #define RACIST_MAP_CHAR_PLAYER "NSEW"
 
-#define INCLUSIVE_MAP_CHARS "01NSEW"
+#define INCLUSIVE_MAP_CHARS "01NSEW "
 
 typedef struct s_pointinator
 {

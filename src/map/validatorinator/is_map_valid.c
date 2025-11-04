@@ -1,28 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_init.c                                         :+:      :+:    :+:   */
+/*   is_map_valid.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/03 13:53:23 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/04 13:48:24 by lfiorell@st      ###   ########.fr       */
+/*   Created: 2025/11/04 12:54:21 by lfiorell@st       #+#    #+#             */
+/*   Updated: 2025/11/04 12:54:58 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils/alloc.h"
-#include <stdlib.h>
+#include "map/validatorinator.h"
 
-t_vec	*vec_init(size_t elem_size)
+bool	is_map_valid(t_map *map)
 {
-	t_vec	*vec;
+	t_floodfillinator	*ffi;
+	t_pointinator		start;
+	bool				result;
 
-	vec = (t_vec *)malloc(sizeof(t_vec));
-	if (!vec)
-		return (NULL);
-	vec->data = NULL;
-	vec->size = 0;
-	vec->capacity = 0;
-	vec->elem_size = elem_size;
-	return (vec);
+	ffi = init_floodfillinator(map);
+	if (!ffi)
+		return (false);
+	start.x = map->player_start.x;
+	start.y = map->player_start.y;
+	result = run_floodfillinator(ffi, start);
+	free_floodfillinator(ffi);
+	return (result);
 }

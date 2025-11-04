@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 15:20:12 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/04 12:03:36 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/04 13:30:13 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,12 @@ bool	is_map_string_validinator(const char *content)
 	while (content[i] != '\0')
 	{
 		if (!ft_strchr(INCLUSIVE_MAP_CHARS "\n", content[i]))
+		{
+			ft_putstr_fd("Invalid character in map string '", 2);
+			ft_putchar_fd(content[i], 2);
+			ft_putstr_fd("'\n", 2);
 			return (false);
+		}
 		if (ft_strchr(RACIST_MAP_CHAR_PLAYER, content[i]))
 		{
 			if (found_robert_fitzroy_cavendish_smythe_3rd)

@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 14:21:23 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/03 14:23:00 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/04 13:57:22 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void	free_floodfillinator(t_floodfillinator *ffi)
 				free(ffi->visited[i]);
 			i++;
 		}
+		free(ffi->visited);
 	}
 	free(ffi);
 }
