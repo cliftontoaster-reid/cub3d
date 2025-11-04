@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 16:38:49 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/04 11:28:53 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/04 12:04:48 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 #include "utils/string.h"
 #include <errno.h>
 #include <stdlib.h>
-
-// TODO: remove string.h
 
 static bool	isemptyline(const char *line)
 {
@@ -53,7 +51,7 @@ static bool	isvalid_option(const char *id)
 	else if (len == 1)
 	{
 		if (id[0] == 'F' || id[0] == 'C')
-			return (false);
+			return (true);
 	}
 	else if (len == 2)
 	{
@@ -69,11 +67,12 @@ static bool	isvalid_value(const char *value)
 	(void)value;
 	return (true);
 }
+
 static bool	is_digit_str(const char *s)
 {
 	while (*s)
 	{
-		if (*s < '0' || *s > '9' || *s == ',')
+		if (!(((*s >= '0' && *s <= '9') || *s == ',')))
 			return (false);
 		s++;
 	}
