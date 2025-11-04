@@ -6,13 +6,13 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 14:04:12 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/03 14:12:20 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/04 11:27:20 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include "utils/alloc.h"
 #include <stdlib.h>
-#include <string.h>
 
 static bool	is_inside(const t_vec *vec, const void *elem)
 {
@@ -27,7 +27,7 @@ static bool	is_inside(const t_vec *vec, const void *elem)
 	i = 0;
 	while (i < vec->size)
 	{
-		if (memcmp(vec_data + (i * vec->elem_size), elem_data,
+		if (ft_memcmp(vec_data + (i * vec->elem_size), elem_data,
 				vec->elem_size) == 0)
 			return (true);
 		i++;

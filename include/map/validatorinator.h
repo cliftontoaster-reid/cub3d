@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 14:14:31 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/03 15:21:20 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/04 11:17:18 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,6 @@
 
 #include "map/table.h"
 #include "utils/alloc.h"
-
-typedef struct s_pointinator
-{
-	int				x;
-	int				y;
-}					t_pointinator;
 
 typedef struct s_floodfillinator
 {

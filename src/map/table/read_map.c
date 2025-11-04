@@ -6,10 +6,11 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 10:59:28 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/31 11:25:09 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/04 11:20:07 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include "map/table.h"
 #include "utils/string.h"
 #include <stdlib.h>

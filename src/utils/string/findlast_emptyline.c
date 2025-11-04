@@ -6,16 +6,16 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 15:52:13 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/03 15:07:16 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/04 11:27:45 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include "map/validatorinator.h"
 #include "utils/string.h"
 #include <ctype.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include <string.h>
 #include <sys/types.h>
 
 static bool	iswhite(char c)
@@ -32,7 +32,7 @@ char	*findlast_emptyline(const char *s)
 
 	if (!s)
 		return (NULL);
-	len = strlen(s);
+	len = ft_strlen(s);
 	if (len < 2)
 		return (NULL);
 	i = len - 1;

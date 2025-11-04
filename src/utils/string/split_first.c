@@ -6,10 +6,11 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 16:45:24 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/30 16:57:48 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/04 11:18:47 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include "utils/alloc.h"
 #include "utils/string.h"
 #include <stdlib.h>

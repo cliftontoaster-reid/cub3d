@@ -6,13 +6,12 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:32:14 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/03 15:06:54 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/04 11:17:16 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "map/validatorinator.h"
 #include <stdbool.h>
 #include <sys/types.h>
 
@@ -22,6 +21,12 @@
 #define RACIST_MAP_CHAR_PLAYER "NSEW"
 
 #define INCLUSIVE_MAP_CHARS "01NSEW"
+
+typedef struct s_pointinator
+{
+	int				x;
+	int				y;
+}					t_pointinator;
 
 typedef enum e_player_dir
 {

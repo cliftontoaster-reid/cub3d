@@ -6,15 +6,15 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:27:10 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/03 15:21:32 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/04 11:27:56 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include <string.h>
-//
+#include "libft.h"
 #include "map/table.h"
+#include "map/validatorinator.h"
 #include "utils/panic.h"
+#include <stdlib.h>
 
 static int	count_lines(const char *content)
 {
@@ -98,7 +98,7 @@ static void	find_player_start(t_map *map)
 		while (x < map->width)
 		{
 			cell = map->data[y][x];
-			if (strchr(RACIST_MAP_CHAR_PLAYER, cell))
+			if (ft_strchr(RACIST_MAP_CHAR_PLAYER, cell))
 			{
 				map->player_start.x = x;
 				map->player_start.y = y;

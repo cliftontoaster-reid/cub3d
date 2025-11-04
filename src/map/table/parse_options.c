@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 16:38:49 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/03 15:07:16 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/04 11:28:53 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include "utils/string.h"
 #include <errno.h>
 #include <stdlib.h>
-#include <string.h>
 
 // TODO: remove string.h
 
@@ -87,7 +86,7 @@ static bool	is_valid_rgb_component(const char *s)
 
 	if (!is_digit_str(s))
 		return (false);
-	fr = ft_strfreq(s, ',');
+	fr = ft_strfreq((char *)s, ',');
 	if (fr != 2)
 		return (false);
 	return (true);
@@ -125,17 +124,17 @@ static void	setoption(t_map *map, const char *option, const char *value)
 	while (*value == RACIST_MAP_CHAR_THE_DARK_EMPTY_VOID_OF_SPACE
 		|| *value == '\t')
 		value++;
-	if (strcmp(option, "NO") == 0)
-		map->north_wall_texture = strdup(value);
-	else if (strcmp(option, "SO") == 0)
-		map->south_wall_texture = strdup(value);
-	else if (strcmp(option, "WE") == 0)
-		map->west_wall_texture = strdup(value);
-	else if (strcmp(option, "EA") == 0)
-		map->east_wall_texture = strdup(value);
-	else if (strcmp(option, "F") == 0)
+	if (ft_strcmp(option, "NO") == 0)
+		map->north_wall_texture = ft_strdup(value);
+	else if (ft_strcmp(option, "SO") == 0)
+		map->south_wall_texture = ft_strdup(value);
+	else if (ft_strcmp(option, "WE") == 0)
+		map->west_wall_texture = ft_strdup(value);
+	else if (ft_strcmp(option, "EA") == 0)
+		map->east_wall_texture = ft_strdup(value);
+	else if (ft_strcmp(option, "F") == 0)
 		map->floor_color = parse_rgb_value(value);
-	else if (strcmp(option, "C") == 0)
+	else if (ft_strcmp(option, "C") == 0)
 		map->ceiling_color = parse_rgb_value(value);
 }
 

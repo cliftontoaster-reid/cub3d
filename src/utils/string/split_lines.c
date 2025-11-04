@@ -6,14 +6,14 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 11:00:00 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/31 11:22:18 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/04 11:26:07 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include "utils/alloc.h"
 #include "utils/string.h"
 #include <stdlib.h>
-#include <string.h>
 
 static int	count_lines(const char *s)
 {
@@ -69,9 +69,9 @@ static const char	**fill_array(const char **arr, const char *s, int count)
 	start = s;
 	while (i < count)
 	{
-		end = strchr(start, '\n');
+		end = ft_strchr(start, '\n');
 		if (!end)
-			end = start + strlen(start);
+			end = start + ft_strlen(start);
 		arr[i] = allocate_and_copy_line(start, end, arr, i);
 		if (!arr[i])
 			return (NULL);
