@@ -53,3 +53,15 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+# Project specific
+.vscode/*
+# Except for .vscode/extensions.json
+!.vscode/extensions.json
+.idea/
+*.code-workspace
+target/
+/cub3d
+/compile_commands.json
+/.cache
+/vgcore.*

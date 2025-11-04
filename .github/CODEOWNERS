@@ -1,0 +1,21 @@
+# Lines starting with '#' are comments.
+# Each line is a file pattern followed by one or more owners.
+
+# Default owner for all files
+* @cliftontoaster-reid
+
+# Specific owners for different parts of the project
+/.github/ @cliftontoaster-reid
+/assets/ @cliftontoaster-reid
+/docs/ @cliftontoaster-reid
+/scripts/ @cliftontoaster-reid
+/tests/ @cliftontoaster-reid
+
+# Ownership for 'include' directory and its subdirectories
+/include/map/ @cliftontoaster-reid
+/include/utils/ @cliftontoaster-reid
+
+# Ownership for 'src' directory and its subdirectories/files
+/src/main.c @cliftontoaster-reid
+/src/map/ @cliftontoaster-reid
+/src/utils/ @cliftontoaster-reid
