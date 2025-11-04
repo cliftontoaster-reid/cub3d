@@ -218,5 +218,5 @@ format:
 
 compile_commands.json: Makefile $(SRC) $(INC)
 	@echo "Generating compile_commands.json ..."
-	@bear -- $(MAKE) fclean all CC=cc
+	@bear -- $(MAKE) fclean all CC=clang
 	@echo "compile_commands.json generated."
