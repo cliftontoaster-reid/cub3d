@@ -64,3 +64,4 @@ target/
 /cub3d
 /compile_commands.json
 /.cache
+/vgcore.*

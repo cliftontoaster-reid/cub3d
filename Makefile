@@ -5,13 +5,18 @@ RM ?= rm -rf
 
 MODE ?= debug
 ifeq ($(MODE),release)
-	CFLAGS  += -O3 -g0 -D_FORTIFY_SOURCE=2
+	CFLAGS  += -O3 -g3 -D_FORTIFY_SOURCE=2
 	LDFLAGS += -Wl,-z,relro -Wl,-z,now
 else ifeq ($(MODE),debug)
-	CFLAGS  += -O0 -g3 -fstack-protector-strong -fstack-clash-protection -Warray-bounds -Wformat-security -fsanitize=address,undefined -fno-omit-frame-pointer
-	LDFLAGS += -fsanitize=address,undefined
+	CFLAGS  += -O0 -g3 -fstack-protector-strong -fstack-clash-protection -Warray-bounds -Wformat-security -fno-omit-frame-pointer
 else
 	$(error "Invalid MODE specified: $(MODE). Use 'debug' or 'release'.")
+endif
+
+FSAN ?= true
+ifeq ($(FSAN),true)
+	CFLAGS  += -fsanitize=address,undefined -fno-omit-frame-pointer
+	LDFLAGS += -fsanitize=address,undefined
 endif
 
 # Tools optimization
@@ -92,6 +97,14 @@ LIBFT_ARCHIVE = $(LIBFT_MODULE_DIR)/libft.a
 LIBFT_INCLUDE_DIR = $(LIBFT_MODULE_DIR)
 INCLUDE += -I$(LIBFT_INCLUDE_DIR)
 
+MLX_REPO_URL = https://github.com/42Paris/minilibx-linux.git
+MLX_MODULE_DIR = $(ORIGIN_DIR)/$(TARGET)/minilibx
+MLX_SRC_DIR = $(MLX_MODULE_DIR)/src
+MLX_ARCHIVE = $(MLX_MODULE_DIR)/libmlx.a
+MLX_INCLUDE_DIR = $(MLX_MODULE_DIR)
+INCLUDE += -I$(MLX_INCLUDE_DIR)
+LDFLAGS += -L$(MLX_MODULE_DIR) -lmlx -lX11 -lXext -lm
+
 # Criterion test framework (precompiled distribution)
 # We download the prebuilt tar.xz and extract it into the target install dir
 CRITERION_VERSION = 2.4.2
@@ -105,12 +118,12 @@ all: dirs $(NAME)
 
 -include $(DEP)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c ${LIBFT_ARCHIVE}
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c ${LIBFT_ARCHIVE} ${MLX_ARCHIVE}
 	@mkdir -p $(@D) $(dir $(DEP_DIR)/$*.d)
 	@$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/$*.d -c $< -o $@ $(INCLUDE) -D 'VERSION="$(VERSION)"'
 	@echo -e "$(BOLD)Compiled$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/$*.d$(RESET)"
 
-$(TEST_OBJ_DIR)/%.o: $(TEST_DIR)/%.c ${LIBFT_ARCHIVE}
+$(TEST_OBJ_DIR)/%.o: $(TEST_DIR)/%.c ${LIBFT_ARCHIVE} ${MLX_ARCHIVE} ${CRITERION_INSTALL_DIR}
 	@mkdir -p $(@D) $(dir $(DEP_DIR)/$*.d)
 	@$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/$*.d -c $< -o $@ $(INCLUDE) -I$(CRITERION_INSTALL_DIR)/include
 	@echo -e "$(BOLD)Compiled$(RESET) $(YELLOW)test$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/$*.d$(RESET)"
@@ -151,6 +164,7 @@ $(CRITERION_INSTALL_DIR):
 
 # Clone and build libft library
 libft: $(LIBFT_ARCHIVE)
+mlx: $(MLX_ARCHIVE)
 
 $(LIBFT_ARCHIVE):
 	@mkdir -p "$(LIBFT_MODULE_DIR)"
@@ -161,6 +175,16 @@ $(LIBFT_ARCHIVE):
 	@# Build libft with make
 	@$(MAKE) -C "$(LIBFT_MODULE_DIR)" all OBJ_DIR="$(LIBFT_MODULE_DIR)/target" CACHE_DIR="$(LIBFT_MODULE_DIR)/cache" CC="$(CC)" CFLAGS="$(CFLAGS)"
 	@echo -e "$(BOLD)Built libft:$(RESET) $(GREEN)$(LIBFT_ARCHIVE)$(RESET)"
+
+$(MLX_ARCHIVE):
+	@mkdir -p "$(MLX_MODULE_DIR)"
+	@# Clone minilibx if not already present
+	@if [ ! -d "$(MLX_MODULE_DIR)/.git" ]; then \
+		git clone "$(MLX_REPO_URL)" "$(MLX_MODULE_DIR)" > /dev/null 2>&1; \
+	fi
+	@# Build minilibx with make
+	@$(MAKE) -C "$(MLX_MODULE_DIR)" all CC="$(CC)"
+	@echo -e "$(BOLD)Built minilibx:$(RESET) $(GREEN)$(MLX_ARCHIVE)$(RESET)"
 
 test: criterion all $(TOBJ) $(TDEP)
 	@$(CC) -o $(BIN_DIR)/$(NAME).test $(TOBJ) $(filter-out $(OBJ_DIR)/main.o,$(OBJ)) -L$(CRITERION_INSTALL_DIR)/lib -lcriterion $(LDFLAGS) -lXtst
