@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 14:23:11 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/04 13:49:03 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/04 14:31:19 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,26 +15,29 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-static bool	alloc_list(void **list, size_t elem_size, int height)
+static bool	alloc_list(bool ***list, size_t elem_size, int height, int width)
 {
-	int	i;
+	int		i;
+	bool	**rows;
 
-	*list = (void *)malloc(sizeof(void *) * height);
-	if (!*list)
+	(void)elem_size;
+	rows = (bool **)malloc(sizeof(bool *) * height);
+	if (!rows)
 		return (false);
 	i = 0;
 	while (i < height)
 	{
-		((char **)*list)[i] = (char *)malloc(elem_size);
-		if (!((char **)*list)[i])
+		rows[i] = (bool *)calloc((size_t)width, sizeof(bool));
+		if (!rows[i])
 		{
 			while (--i >= 0)
-				free(((char **)*list)[i]);
-			free(*list);
+				free(rows[i]);
+			free(rows);
 			return (false);
 		}
 		i++;
 	}
+	*list = rows;
 	return (true);
 }
 
@@ -54,8 +57,8 @@ t_floodfillinator	*init_floodfillinator(t_map *map)
 		free(ffi);
 		return (NULL);
 	}
-	if (!alloc_list((void **)&ffi->visited, sizeof(bool) * ffi->width,
-			ffi->height))
+	if (!alloc_list(&ffi->visited, sizeof(bool) * ffi->width, ffi->height,
+			ffi->width))
 	{
 		free(ffi);
 		return (NULL);
