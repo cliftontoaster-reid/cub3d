@@ -3,6 +3,9 @@ on:
     branches:
       - main
       - dev
+    paths:
+      - "**/*.c"
+      - "**/*.h"
   pull_request:
     branches:
       - main
