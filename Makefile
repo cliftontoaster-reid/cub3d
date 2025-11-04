@@ -42,7 +42,7 @@ SRC_DIR = src
 TEST_DIR = tests
 TARGET = x86_64-linux-gnu
 ORIGIN_DIR = target
-TARGET_DIR = $(ORIGIN_DIR)/$(TARGET)/$(NAME)
+TARGET_DIR = $(ORIGIN_DIR)/$(TARGET)/$(MODE)-$(CC)/$(NAME)
 OBJ_DIR = $(TARGET_DIR)/obj
 TEST_OBJ_DIR = $(TARGET_DIR)/tobj
 DEP_DIR = $(TARGET_DIR)/dep
@@ -50,12 +50,6 @@ BIN_DIR = $(TARGET_DIR)/bin
 TMP_DIR = $(TARGET_DIR)/tmp
 SCRIPT_DIR = scripts
 INC_DIR = include
-
-## If ccache is available, use it to speed up recompilation, it should use TARGET_DIR/ccache as its cache directory
-ifneq (, $(shell which ccache))
-	export CCACHE_DIR = $(TARGET_DIR)/ccache
-	CC := ccache $(CC)
-endif
 
 # Source files
 SRC := $(shell find $(SRC_DIR) -type f -name '*.c')
@@ -91,7 +85,7 @@ endif
 
 # libft library (cloned from git and built with make)
 LIBFT_REPO_URL = https://github.com/cliftontoaster-reid/libft.git
-LIBFT_MODULE_DIR = $(ORIGIN_DIR)/$(TARGET)/libft
+LIBFT_MODULE_DIR = $(ORIGIN_DIR)/$(TARGET)/$(MODE)-$(CC)/libft
 LIBFT_SRC_DIR = $(LIBFT_MODULE_DIR)/src
 LIBFT_ARCHIVE = $(LIBFT_MODULE_DIR)/libft.a
 LIBFT_INCLUDE_DIR = $(LIBFT_MODULE_DIR)
