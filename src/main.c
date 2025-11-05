@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 14:49:38 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/04 13:58:33 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/05 14:19:48 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,22 @@ void	print_map(t_map *map)
 	printf("Ceiling Color: %#06x\n", map->ceiling_color);
 }
 
+void	print_legal(void)
+{
+	printf("Copyright (c) 2025, Clifton Toaster Reid & zamohame\n");
+	printf("This software is provided under the BSD-3-Clause License.\n");
+	printf("A copy of the license can be found in the LICENSE file.\n");
+	printf("If you did not receive a copy, see");
+	printf(" https://opensource.org/licenses/BSD-3-Clause\n\n");
+}
+
 int	main(int argc, char const *argv[])
 {
 	const char	*map_file = argv[1];
 	size_t		len;
 	t_map		*map;
 
+	print_legal();
 	if (argc != 2)
 	{
 		printf("Usage: %s <map file>\n", argv[0]);

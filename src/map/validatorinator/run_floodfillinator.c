@@ -6,13 +6,13 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 14:26:24 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/03 15:07:16 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/05 13:24:01 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "map/validatorinator.h"
 
-static void	push_pos(t_floodfillinator *ffi, int x, int y)
+static inline void	push_pos(t_floodfillinator *ffi, int x, int y)
 {
 	t_pointinator	pos;
 
