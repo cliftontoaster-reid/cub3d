@@ -45,6 +45,7 @@ ORIGIN_DIR = target
 TARGET_DIR = $(ORIGIN_DIR)/$(TARGET)/$(MODE)-$(CC)/$(NAME)
 OBJ_DIR = $(TARGET_DIR)/obj
 TEST_OBJ_DIR = $(TARGET_DIR)/tobj
+BENCH_OBJ_DIR = $(TARGET_DIR)/bobj
 DEP_DIR = $(TARGET_DIR)/dep
 BIN_DIR = $(TARGET_DIR)/bin
 TMP_DIR = $(TARGET_DIR)/tmp
@@ -54,15 +55,22 @@ INC_DIR = include
 # Source files
 SRC := $(shell find $(SRC_DIR) -type f -name '*.c')
 TSRC := $(shell find $(TEST_DIR) -type f -name '*.c')
+BSRC := $(shell find bench -type f -name '*.c')
 INC := $(shell find $(INC_DIR) -type f -name '*.h' -not -name '*.int.h')
 OBJ := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC))
 DEP := $(patsubst $(SRC_DIR)/%.c,$(DEP_DIR)/%.d,$(SRC))
 TOBJ := $(patsubst $(TEST_DIR)/%.c,$(TEST_OBJ_DIR)/%.o,$(TSRC))
 TDEP := $(patsubst $(TEST_DIR)/%.c,$(DEP_DIR)/%.d,$(TSRC))
+BOBJ := $(patsubst bench/%.c,$(BENCH_OBJ_DIR)/%.o,$(BSRC))
+BDIR_DEPS := $(patsubst bench/%.c,$(DEP_DIR)/bench/%.d,$(BSRC))
+BDEP := $(patsubst bench/%.c,$(DEP_DIR)/bench/%.d,$(BSRC))
+
+# Per-benchmark binaries (one binary per source file in bench/)
+BENCH_BINS := $(patsubst bench/%.c,$(BIN_DIR)/bench-%.bench,$(BSRC))
 
 INCLUDE = -I$(INC_DIR)
 
-DIRS = $(OBJ_DIR) $(DEP_DIR) $(BIN_DIR) $(TMP_DIR) $(TEST_OBJ_DIR) $(INCLUDE_OUT)
+DIRS = $(OBJ_DIR) $(DEP_DIR) $(BIN_DIR) $(TMP_DIR) $(TEST_OBJ_DIR) $(INCLUDE_OUT) $(BENCH_OBJ_DIR)
 
 # if colours
 ifeq ($(shell tput colors 2>/dev/null),256)
@@ -81,7 +89,7 @@ else
 	BLUE =
 endif
 
-.PHONY: all clean fclean re install uninstall dirs criterion libft
+.PHONY: all clean fclean re install uninstall dirs criterion libft bench run_bench
 
 # libft library (cloned from git and built with make)
 LIBFT_REPO_URL = https://github.com/cliftontoaster-reid/libft.git
@@ -122,15 +130,15 @@ $(TEST_OBJ_DIR)/%.o: $(TEST_DIR)/%.c ${LIBFT_ARCHIVE} ${MLX_ARCHIVE} ${CRITERION
 	@$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/$*.d -c $< -o $@ $(INCLUDE) -I$(CRITERION_INSTALL_DIR)/include
 	@echo -e "$(BOLD)Compiled$(RESET) $(YELLOW)test$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/$*.d$(RESET)"
 
+$(BENCH_OBJ_DIR)/%.o: bench/%.c ${LIBFT_ARCHIVE} ${MLX_ARCHIVE} ${CRITERION_INSTALL_DIR}
+	@mkdir -p $(@D) $(dir $(DEP_DIR)/bench/$*.d)
+	@$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/bench/$*.d -c $< -o $@ $(INCLUDE) -I$(CRITERION_INSTALL_DIR)/include
+	@echo -e "$(BOLD)Compiled$(RESET) $(YELLOW)bench$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/bench/$*.d$(RESET)"
+
 $(NAME): $(OBJ)  $(INCLUDED_FILES)
 	@mkdir -p "$(@D)"
 	@$(CC) -o "$@" $(OBJ) $(LIBFT_ARCHIVE) $(LDFLAGS) -D 'VERSION=\"$(VERSION)\"'
 	@echo -e "$(BOLD)Linked$(RESET) $(NAME)"
-
-test: criterion all $(TOBJ) $(TDEP)
-	@$(CC) -o $(BIN_DIR)/$(NAME).test $(TOBJ) $(filter-out $(OBJ_DIR)/main.o,$(OBJ)) -L$(CRITERION_INSTALL_DIR)/lib -lcriterion $(LDFLAGS) -lXtst -D 'VERSION=\"$(VERSION)\"' \
-		$(LIBFT_ARCHIVE) $(MLX_ARCHIVE)
-	@echo -e "$(BOLD)Linked test executable:$(RESET) $(GREEN)$(BIN_DIR)/$(NAME).test$(RESET)"
 
 dirs:
 	@$(foreach d, $(DIRS), mkdir -p "$(d)";)
@@ -185,6 +193,11 @@ $(MLX_ARCHIVE):
 	@$(MAKE) -C "$(MLX_MODULE_DIR)" all CC="$(CC)"
 	@echo -e "$(BOLD)Built minilibx:$(RESET) $(GREEN)$(MLX_ARCHIVE)$(RESET)"
 
+test: criterion all $(TOBJ) $(TDEP)
+	@$(CC) -o $(BIN_DIR)/$(NAME).test $(TOBJ) $(filter-out $(OBJ_DIR)/main.o,$(OBJ)) -L$(CRITERION_INSTALL_DIR)/lib -lcriterion $(LDFLAGS) -lXtst -D 'VERSION=\"$(VERSION)\"' \
+		$(LIBFT_ARCHIVE) $(MLX_ARCHIVE)
+	@echo -e "$(BOLD)Linked test executable:$(RESET) $(GREEN)$(BIN_DIR)/$(NAME).test$(RESET)"
+
 run_test/%:
 	@echo "Running tests in virtual X11 display ($*-bit depth)..."
 	@export DISPLAY_DEPTH=$* && LD_LIBRARY_PATH=$(BIN_DIR):$(CRITERION_INSTALL_DIR)/lib xvfb-run --auto-servernum --server-args='-screen 0 1024x768x$*' $(BIN_DIR)/$(NAME).test --verbose
@@ -193,18 +206,24 @@ run_tests: test
 	$(MAKE) run_test/24
 	@echo "All tests completed."
 
-examples: all
-	@echo "Building all examples..."
-	@$(foreach dir, $(wildcard examples/*), \
-		echo "Building example $(dir) ..."; \
-		$(MAKE) -C $(dir) all MODE="$(MODE)"; )
-	@echo "All examples built successfully!"
+bench: criterion all $(BENCH_BINS)
 
-# Run example by name examples/%
-examples/%: all
-	@echo "Building example $* ..."
-	$(MAKE) -C examples/$* all
-	$(MAKE) -C examples/$* run
+$(BIN_DIR)/bench-%.bench: $(BENCH_OBJ_DIR)/%.o $(filter-out $(OBJ_DIR)/main.o,$(OBJ)) ${LIBFT_ARCHIVE} ${MLX_ARCHIVE} ${CRITERION_INSTALL_DIR}
+	@$(CC) -o $@ $(BENCH_OBJ_DIR)/$*.o $(filter-out $(OBJ_DIR)/main.o,$(OBJ)) $(LDFLAGS) -D 'VERSION="$(VERSION)"' \
+		$(LIBFT_ARCHIVE) $(MLX_ARCHIVE)
+	@echo -e "$(BOLD)Linked bench executable:$(RESET) $(GREEN)$@$(RESET)"
+
+run_bench/%:
+	@echo "Running benchmark"
+	@./$(BIN_DIR)/bench-$*.bench
+
+run_bench:
+	@$(MAKE) bench MODE=release FSAN=false
+	@echo -e "$(BOLD)Bench binaries built:$(RESET) $(GREEN)$(BENCH_BINS)$(RESET)"
+	@for b in $(BENCH_BINS); do \
+		echo -e "$(BOLD)Running bench:$(RESET) $$b"; \
+		"$$b"; \
+	done
 
 format:
 	@echo "Formatting source files with clang-format..."
@@ -215,3 +234,12 @@ compile_commands.json: Makefile $(SRC) $(INC)
 	@echo "Generating compile_commands.json ..."
 	@bear -- $(MAKE) fclean all CC=clang
 	@echo "compile_commands.json generated."
+
+make_perf_maps: $(HOME)/.deno/bin/deno
+	@echo "Generating performance maps for use with Linux perf..."
+	@go run $(SCRIPT_DIR)/genMap.go 32 32 'assets/maps/perf/32_[0..2999].cub'
+	@go run $(SCRIPT_DIR)/genMap.go 64 64 'assets/maps/perf/64_[0..2999].cub'
+	@go run $(SCRIPT_DIR)/genMap.go 128 128 'assets/maps/perf/128_[0..2999].cub'
+	@go run $(SCRIPT_DIR)/genMap.go 256 256 'assets/maps/perf/256_[0..2999].cub'
+	@go run $(SCRIPT_DIR)/genMap.go 512 512 'assets/maps/perf/512_[0..2999].cub'
+	@echo "Performance maps generated in $(TARGET_DIR)/maps."

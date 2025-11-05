@@ -20,9 +20,11 @@ static inline void	push_pos(t_floodfillinator *ffi, int x, int y)
 		return ;
 	if (ffi->visited[y][x])
 		return ;
+	/* mark visited when pushing to avoid expensive duplicate scans in the vector */
+	ffi->visited[y][x] = true;
 	pos.x = x;
 	pos.y = y;
-	vec_push_back_absent(ffi->to_visit, &pos);
+	vec_push_back(ffi->to_visit, &pos);
 }
 
 bool	run_floodfillinator(t_floodfillinator *ffi, t_pointinator start)
@@ -34,9 +36,6 @@ bool	run_floodfillinator(t_floodfillinator *ffi, t_pointinator start)
 	while (ffi->to_visit->size > 0)
 	{
 		current = *(t_pointinator *)vec_pop_back(ffi->to_visit);
-		if (ffi->visited[current.y][current.x])
-			continue ;
-		ffi->visited[current.y][current.x] = true;
 		cell = ffi->map[current.y][current.x];
 		if (cell == '1')
 			continue ;

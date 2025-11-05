@@ -167,13 +167,13 @@ async function main() {
   }
 
   const maxAttempts = 200;
-  let attempt = 0;
-  let success = false;
-  let grid: Cell[][] = [];
-  // If the outputs array contains multiple paths, generate one map per path
-  for (const targetPath of outputs) {
-    attempt = 0;
-    success = false;
+
+  // Generate function for a single map
+  async function generateMap(targetPath: string): Promise<void> {
+    let attempt = 0;
+    let success = false;
+    let grid: Cell[][] = [];
+
     while (attempt < maxAttempts && !success) {
       attempt++;
       grid = makeEmptyGrid(w, h);
@@ -189,8 +189,9 @@ async function main() {
       // Place player
       // clear any existing players just in case
       for (let y = 0; y < h; y++) {
-        for (let x = 0; x < w; x++)
+        for (let x = 0; x < w; x++) {
           if (["N", "S", "E", "W"].includes(grid[y][x])) grid[y][x] = "0";
+        }
       }
       if (!placePlayer(grid)) continue;
       // quick checks
@@ -200,6 +201,7 @@ async function main() {
       if (!floodFillIsValid(grid)) continue;
       success = true;
     }
+
     if (!success) {
       console.error(
         "Failed to generate a valid map after",
@@ -207,7 +209,7 @@ async function main() {
         "attempts for",
         targetPath,
       );
-      continue; // try next targetPath (if any)
+      return;
     }
 
     const [fr, fg, fb] = randomRGB();
@@ -229,6 +231,15 @@ async function main() {
     } catch (_e) {}
     await writeMapFile(targetPath, headers, lines);
     console.log(`Wrote generated map to ${targetPath} (attempt ${attempt})`);
+  }
+
+  // Generate maps with concurrency limited to CPU count
+  const cpuCount = navigator.hardwareConcurrency || 1;
+  const results: Promise<void>[] = [];
+
+  for (let i = 0; i < outputs.length; i += cpuCount) {
+    const batch = outputs.slice(i, i + cpuCount);
+    await Promise.all(batch.map(generateMap));
   }
 }
 
