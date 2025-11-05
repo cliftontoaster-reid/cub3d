@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 16:38:49 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/04 15:24:53 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/05 12:29:00 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,34 +31,21 @@ static bool	isemptyline(const char *line)
 	return (true);
 }
 
-static int	stringlength(const char *s)
+static bool	isvalid_option(const char *id, int *idx)
 {
-	int	len;
-
-	len = 0;
-	while (s[len])
-		len++;
-	return (len);
-}
-
-static bool	isvalid_option(const char *id)
-{
-	int	len;
-
-	len = stringlength(id);
-	if (len < 1 || len > 3)
-		return (false);
-	else if (len == 1)
-	{
-		if (id[0] == 'F' || id[0] == 'C')
-			return (true);
-	}
-	else if (len == 2)
-	{
-		if ((id[0] == 'N' && id[1] == 'O') || (id[0] == 'S' && id[1] == 'O')
-			|| (id[0] == 'W' && id[1] == 'E') || (id[0] == 'E' && id[1] == 'A'))
-			return (true);
-	}
+	(*idx)++;
+	if (ft_strcmp(id, "NO") == 0 && *idx == 1)
+		return (true);
+	if (ft_strcmp(id, "SO") == 0 && *idx == 2)
+		return (true);
+	if (ft_strcmp(id, "WE") == 0 && *idx == 3)
+		return (true);
+	if (ft_strcmp(id, "EA") == 0 && *idx == 4)
+		return (true);
+	if (ft_strcmp(id, "F") == 0 && *idx == 5)
+		return (true);
+	if (ft_strcmp(id, "C") == 0 && *idx == 6)
+		return (true);
 	return (false);
 }
 
@@ -141,17 +128,21 @@ bool	parse_options(t_map *map, const char **lines, int count)
 {
 	int		i;
 	char	*parts[2];
+	int		idx;
 
+	idx = 0;
 	i = 0;
 	while (i < count)
 	{
-		if (!isemptyline(lines[i]) && split_first(lines[i],
-				RACIST_MAP_CHAR_THE_DARK_EMPTY_VOID_OF_SPACE, parts))
+		if (!isemptyline(lines[i]))
 		{
-			if (!isvalid_option(parts[0]))
+			if (!split_first(lines[i], ' ', parts))
 				return (false);
-			if (!isvalid_value(parts[1]))
+			if (!isvalid_option(parts[0], &idx) || !isvalid_value(parts[1]))
+			{
+				free(parts[0]);
 				return (false);
+			}
 			setoption(map, parts[0], parts[1]);
 			free(parts[0]);
 		}
