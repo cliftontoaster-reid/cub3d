@@ -237,7 +237,7 @@ compile_commands.json: Makefile $(SRC) $(INC)
 
 make_perf_maps: $(HOME)/.deno/bin/deno $(TMP_DIR)/genMap
 	@echo "Generating performance maps for use with Linux perf..."
-	@ s=8; while true; do \
+	@ s=8; while [ $$s -le 512 ]; do \
 		$(TMP_DIR)/genMap $$s $$s assets/maps/perf/$${s}_[0..2999].cub; \
 		s=$$((s*2)); \
 	done
