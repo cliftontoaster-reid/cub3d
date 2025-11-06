@@ -26,13 +26,17 @@ jobs:
           sudo apt-get install -y build-essential clang make pkg-config \
             xorg-dev xvfb xauth \
             libx11-dev libxext-dev libxrandr-dev libxrender-dev libxfixes-dev libxinerama-dev libxi-dev \
-            libbsd-dev
+            libbsd-dev golang-go
 
       - name: Build project
         run: make all
 
       - name: Run tests
         run: make run_tests
+
+      - name: Prepare for benchmark
+        run: |
+          make make_perf_maps
 
       - name: Run benchmark
         run: make re run_bench MODE=release FSAN=false
