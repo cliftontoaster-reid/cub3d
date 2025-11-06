@@ -32,3 +32,6 @@ jobs:
 
       - name: Run tests
         run: make run_tests
+
+      - name: Run benchmark
+        run: make re run_bench MODE=release FSAN=false
