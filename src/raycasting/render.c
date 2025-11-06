@@ -6,11 +6,11 @@
 /*   By: zamohame <zamohame@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 12:36:18 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/04 13:12:18 by zamohame         ###   ########.fr       */
+/*   Updated: 2025/11/06 13:46:37 by zamohame         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "raycasting.h"
 
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {

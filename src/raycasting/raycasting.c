@@ -6,11 +6,11 @@
 /*   By: zamohame <zamohame@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 14:13:39 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/04 13:21:07 by zamohame         ###   ########.fr       */
+/*   Updated: 2025/11/06 11:31:33 by zamohame         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "raycasting.h"
 
 double	cast_one_ray(t_player *player, char **map, double ray_angle,
 		t_data *img)
@@ -21,14 +21,15 @@ double	cast_one_ray(t_player *player, char **map, double ray_angle,
 	double	dy;
 	double	distance;
 
+	(void)img;
 	x = player->x;
 	y = player->y;
 	while (map[(int)y][(int)x] != '1')
 	{
 		x += cos(ray_angle) * step_size;
 		y += sin(ray_angle) * step_size;
-		my_mlx_pixel_put(img, (int)(x * tile_size), (int)(y * tile_size),
-			0x00FF00);
+		// my_mlx_pixel_put(img, (int)(x * tile_size), (int)(y * tile_size),
+		// 	0x00FF00);
 	}
 	dx = x - player->x;
 	dy = y - player->y;
