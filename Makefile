@@ -235,11 +235,17 @@ compile_commands.json: Makefile $(SRC) $(INC)
 	@bear -- $(MAKE) fclean all CC=clang
 	@echo "compile_commands.json generated."
 
-make_perf_maps: $(HOME)/.deno/bin/deno
+make_perf_maps: $(HOME)/.deno/bin/deno $(TMP_DIR)/genMap
 	@echo "Generating performance maps for use with Linux perf..."
-	@go run $(SCRIPT_DIR)/genMap.go 32 32 'assets/maps/perf/32_[0..2999].cub'
-	@go run $(SCRIPT_DIR)/genMap.go 64 64 'assets/maps/perf/64_[0..2999].cub'
-	@go run $(SCRIPT_DIR)/genMap.go 128 128 'assets/maps/perf/128_[0..2999].cub'
-	@go run $(SCRIPT_DIR)/genMap.go 256 256 'assets/maps/perf/256_[0..2999].cub'
-	@go run $(SCRIPT_DIR)/genMap.go 512 512 'assets/maps/perf/512_[0..2999].cub'
+	@ s=8; while true; do \
+		$(TMP_DIR)/genMap $$s $$s assets/maps/perf/$${s}_[0..2999].cub; \
+		s=$$((s*2)); \
+	done
 	@echo "Performance maps generated in $(TARGET_DIR)/maps."
+
+$(TMP_DIR)/genMap: $(SCRIPT_DIR)/genMapClaude.go
+	@mkdir -p $(TMP_DIR)
+	@echo "Building genMap (optimized): $(TMP_DIR)/genMap"
+	@# Build with trimmed paths and stripped symbols for maximum practical optimization/size reduction
+	@CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o $(TMP_DIR)/genMap $(SCRIPT_DIR)/genMapClaude.go
+	@echo "Built $(TMP_DIR)/genMap"
