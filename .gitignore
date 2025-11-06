@@ -65,3 +65,4 @@ target/
 /compile_commands.json
 /.cache
 /vgcore.*
+/assets/maps/perf

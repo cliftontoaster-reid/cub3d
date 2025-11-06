@@ -6,13 +6,13 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 14:26:24 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/03 15:07:16 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/05 13:24:01 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "map/validatorinator.h"
 
-static void	push_pos(t_floodfillinator *ffi, int x, int y)
+static inline void	push_pos(t_floodfillinator *ffi, int x, int y)
 {
 	t_pointinator	pos;
 
@@ -20,9 +20,11 @@ static void	push_pos(t_floodfillinator *ffi, int x, int y)
 		return ;
 	if (ffi->visited[y][x])
 		return ;
+	/* mark visited when pushing to avoid expensive duplicate scans in the vector */
+	ffi->visited[y][x] = true;
 	pos.x = x;
 	pos.y = y;
-	vec_push_back_absent(ffi->to_visit, &pos);
+	vec_push_back(ffi->to_visit, &pos);
 }
 
 bool	run_floodfillinator(t_floodfillinator *ffi, t_pointinator start)
@@ -34,9 +36,6 @@ bool	run_floodfillinator(t_floodfillinator *ffi, t_pointinator start)
 	while (ffi->to_visit->size > 0)
 	{
 		current = *(t_pointinator *)vec_pop_back(ffi->to_visit);
-		if (ffi->visited[current.y][current.x])
-			continue ;
-		ffi->visited[current.y][current.x] = true;
 		cell = ffi->map[current.y][current.x];
 		if (cell == '1')
 			continue ;

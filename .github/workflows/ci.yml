@@ -6,6 +6,7 @@ on:
     paths:
       - "**/*.c"
       - "**/*.h"
+      - .github/workflows/ci.yml
   pull_request:
     branches:
       - main
@@ -32,3 +33,6 @@ jobs:
 
       - name: Run tests
         run: make run_tests
+
+      - name: Run benchmark
+        run: make re run_bench MODE=release FSAN=false
