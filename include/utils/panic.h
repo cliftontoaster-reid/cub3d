@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:49:05 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/10/30 17:00:47 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/06 15:51:40 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,3 +25,5 @@ void	todo(const char *message, const char *file, int line);
 /// @brief Prints a number to stderr.
 /// @param n The number to print.
 void	perrornbr(int n);
+
+void	useful_perror(int errnum, const char *msg);
