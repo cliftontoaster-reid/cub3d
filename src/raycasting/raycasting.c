@@ -3,55 +3,88 @@
 /*                                                        :::      ::::::::   */
 /*   raycasting.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zamohame <zamohame@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 14:13:39 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/06 11:31:33 by zamohame         ###   ########.fr       */
+/*   Updated: 2025/11/10 16:43:17 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raycasting.h"
 
-double	cast_one_ray(t_player *player, char **map, double ray_angle,
-		t_data *img)
+double	cast_one_ray(t_player *player, t_map *map, double ray_dx, double ray_dy)
 {
-	double	x;
-	double	y;
-	double	dx;
-	double	dy;
-	double	distance;
+	double	delta_x;
+	double	delta_y;
+	double	side_x;
+	double	side_y;
+	int		map_x;
+	int		map_y;
+	int		step_x;
+	int		step_y;
+	double	perp_dist;
 
-	(void)img;
-	x = player->x;
-	y = player->y;
-	while (map[(int)y][(int)x] != '1')
+	map_x = (int)player->x;
+	map_y = (int)player->y;
+	delta_x = fabs(1.0 / ray_dx);
+	delta_y = fabs(1.0 / ray_dy);
+	if (ray_dx < 0)
 	{
-		x += cos(ray_angle) * step_size;
-		y += sin(ray_angle) * step_size;
-		// my_mlx_pixel_put(img, (int)(x * tile_size), (int)(y * tile_size),
-		// 	0x00FF00);
+		step_x = -1;
+		side_x = (player->x - map_x) * delta_x;
 	}
-	dx = x - player->x;
-	dy = y - player->y;
-	distance = sqrt(dx * dx + dy * dy);
-	return (distance);
+	else
+	{
+		step_x = 1;
+		side_x = (map_x + 1.0 - player->x) * delta_x;
+	}
+	if (ray_dy < 0)
+	{
+		step_y = -1;
+		side_y = (player->y - map_y) * delta_y;
+	}
+	else
+	{
+		step_y = 1;
+		side_y = (map_y + 1.0 - player->y) * delta_y;
+	}
+	while (1)
+	{
+		if (side_x < side_y)
+		{
+			side_x += delta_x;
+			map_x += step_x;
+			perp_dist = (map_x - player->x + (1 - step_x) / 2) / ray_dx;
+		}
+		else
+		{
+			side_y += delta_y;
+			map_y += step_y;
+			perp_dist = (map_y - player->y + (1 - step_y) / 2) / ray_dy;
+		}
+		if (map_x < 0 || map_y < 0 || map_x >= map->width
+			|| map_y >= map->height || map->data[map_y][map_x] == '1')
+			break ;
+	}
+	return (perp_dist);
 }
 
-void	cast_all_rays(t_player *player, char **map, t_data *data)
+void	cast_all_rays(t_player *player, t_map *map, t_data *data)
 {
-	int		i;
+	int		col;
 	double	dist;
-	double	ray_angle;
-	double	angle_step;
+	double	camera_x;
+	double	ray_dx;
+	double	ray_dy;
 
-	i = 0;
-	ray_angle = player->dir - (FOV / 2);
-	angle_step = FOV / (double)win_width;
-	while (i < win_width)
+	col = 0;
+	while (col < win_width)
 	{
-		dist = cast_one_ray(player, map, ray_angle, data);
-		draw_wall(data, i, dist);
-		ray_angle += angle_step;
-		i++;
+		camera_x = 2.0 * (double)col / (double)win_width - 1.0;
+		ray_dx = player->dir_x + player->plane_x * camera_x;
+		ray_dy = player->dir_y + player->plane_y * camera_x;
+		dist = cast_one_ray(player, map, ray_dx, ray_dy);
+		draw_wall(data, col, dist);
+		col++;
 	}
 }

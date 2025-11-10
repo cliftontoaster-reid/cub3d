@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zamohame <zamohame@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 12:36:18 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/06 13:46:37 by zamohame         ###   ########.fr       */
+/*   Updated: 2025/11/10 16:46:25 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
 	char	*dst;
 
-	if (x < 0 || x > 800 || y < 0 || y >= 600)
+	if (x < 0 || x > win_width || y < 0 || y >= win_height)
 		return ;
 	dst = data->addr + (y * data->line_length + x * (data->bpp / 8));
 	*(unsigned int *)dst = color;
@@ -50,8 +50,8 @@ void	draw_wall(t_data *img, int x, double dist)
 
 	if (dist < 0.0001)
 		dist = 0.0001;
-	plane = (win_width / 2) / tan(FOV / 2);
-	wall_height = (int)((tile_size * plane) / dist);
+	plane = (double)win_width / 2.0 / tan(FOV / 2);
+	wall_height = (int)((1.0 * plane) / (dist * tile_size));
 	top = (win_height / 2) - (wall_height / 2);
 	bottom = (win_height / 2) + (wall_height / 2);
 	if (top < 0)
@@ -92,4 +92,12 @@ void	draw_minimap(t_data *img, char **map, t_player *player)
 	x = (int)(player->x * tile_size);
 	y = (int)(player->y * tile_size);
 	my_mlx_pixel_put(img, x, y, 0xFF0000);
+}
+
+void	render_frame(t_game *game)
+{
+	mlx_clear_window(game->mlx, game->win);
+	memset(game->img.addr, 0, win_width * win_height * 4);
+	cast_all_rays(&game->player, &game->map, &game->img);
+	mlx_put_image_to_window(game->mlx, game->win, game->img.img, 0, 0);
 }
