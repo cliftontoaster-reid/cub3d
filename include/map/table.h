@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:32:14 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/04 13:30:29 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/10 15:57:03 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ typedef enum e_player_dir
 typedef struct s_map
 {
 	int				width;
+	int				start;
 	int				height;
 	char			**data;
 
@@ -50,6 +51,7 @@ typedef struct s_map
 	char			*east_wall_texture;
 	int				floor_color;
 	int				ceiling_color;
+	const char		*map_path;
 }					t_map;
 
 t_map				*create_map(int width, int height);
@@ -58,7 +60,8 @@ bool				is_inbounds(t_map *map, int x, int y);
 char				get_map_cell(t_map *map, int x, int y);
 void				set_map_cell(t_map *map, int x, int y, char value);
 
-t_map				*map_from_str(const char *content);
+t_map				*map_from_str(const char *content, const char *map_path,
+						int start);
 bool				parse_options(t_map *map, const char **lines, int count);
 
-t_map				*read_map(const char *fullcontent);
+t_map				*read_map(const char *fullcontent, const char *path);

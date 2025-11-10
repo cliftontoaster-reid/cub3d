@@ -3,27 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zamohame <zamohame@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 14:49:38 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/06 16:06:44 by zamohame         ###   ########.fr       */
+/*   Updated: 2025/11/10 16:34:50 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "map/table.h"
 #include "map/validatorinator.h"
+#include "mlx.h"
+#include "raycasting.h"
+#include "utils/panic.h"
 #include "utils/reader.h"
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-static void	useful_perror(int errnum, const char *msg)
-{
-	errno = errnum;
-	perror(msg);
-}
+#ifndef VERSION
+# define VERSION "something went wrong"
+#endif
 
 static t_map	*read_da_map(const char *filename)
 {
@@ -36,18 +37,16 @@ static t_map	*read_da_map(const char *filename)
 		useful_perror(ENOMEM, "Error:\nCan't read map file ");
 		return (NULL);
 	}
-	map = read_map(content);
+	map = read_map(content, filename);
 	if (!map)
 	{
 		free(content);
-		useful_perror(EINVAL, "Error:\nCan't parse map file ");
 		return (NULL);
 	}
 	free(content);
-	if (is_map_valid(map) == false)
+	if (is_map_valid(map, filename) == false)
 	{
 		free_map(map);
-		useful_perror(EINVAL, "Error:\nMap is open ");
 		return (NULL);
 	}
 	return (map);
@@ -88,6 +87,29 @@ void	print_legal(void)
 	printf(" https://opensource.org/licenses/BSD-3-Clause\n\n");
 }
 
+static int	start_game(t_map *map)
+{
+	void		*mlx;
+	void		*win;
+	t_data		data;
+	t_player	player;
+
+	mlx = mlx_init();
+	win = mlx_new_window(mlx, 800, 600, "Cub3D v" VERSION);
+	data.img = mlx_new_image(mlx, 800, 600);
+	data.addr = mlx_get_data_addr(data.img, &data.bpp, &data.line_length,
+			&data.endian);
+	printf("Initializing player...\n");
+	init_player(&player, map);
+	cast_all_rays(&player, map, &data);
+	// draw_minimap(&img, map, &player);
+	mlx_put_image_to_window(mlx, win, data.img, 0, 0);
+	// mlx_hook(win, 2, 1L << 0, handle_keypress, &data);
+	printf("Entering main loop...\n");
+	mlx_loop(mlx);
+	return (0);
+}
+
 int	main(int argc, char const *argv[])
 {
 	const char	*map_file = argv[1];
@@ -110,6 +132,7 @@ int	main(int argc, char const *argv[])
 	map = read_da_map(map_file);
 	if (!map)
 		return (1);
+	start_game(map);
 	print_map(map);
 	free_map(map);
 	return (0);

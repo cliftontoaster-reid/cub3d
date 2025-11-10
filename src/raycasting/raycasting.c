@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycasting.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zamohame <zamohame@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 14:13:39 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/10 15:54:18 by zamohame         ###   ########.fr       */
+/*   Updated: 2025/11/10 16:36:51 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,8 @@ double	cast_one_ray(t_player *player, t_map *map, double ray_dx, double ray_dy)
 
 	rx = player->x;
 	ry = player->y;
-	while ((int)rx >= 0 && (int)ry >= 0
-	&& (int)rx < map->width && (int)ry < map->height
-	&& map->data[(int)ry][(int)rx] != '1')
+	while ((int)rx >= 0 && (int)ry >= 0 && (int)rx < map->width
+		&& (int)ry < map->height && map->data[(int)ry][(int)rx] != '1')
 	{
 		rx += ray_dx * step_size;
 		ry += ray_dy * step_size;
@@ -41,7 +40,7 @@ void	cast_all_rays(t_player *player, t_map *map, t_data *data)
 {
 	int		col;
 	double	dist;
-	double camera_x;
+	double	camera_x;
 	double	ray_dx;
 	double	ray_dy;
 

@@ -14,8 +14,10 @@
 # Ownership for 'include' directory and its subdirectories
 /include/map/ @cliftontoaster-reid
 /include/utils/ @cliftontoaster-reid
+/include/raycasting.h @Zetsudes
 
 # Ownership for 'src' directory and its subdirectories/files
 /src/main.c @cliftontoaster-reid
 /src/map/ @cliftontoaster-reid
 /src/utils/ @cliftontoaster-reid
+/src/raycasting/ @Zetsudes

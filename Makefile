@@ -56,7 +56,7 @@ INC_DIR = include
 SRC := $(shell find $(SRC_DIR) -type f -name '*.c')
 TSRC := $(shell find $(TEST_DIR) -type f -name '*.c')
 BSRC := $(shell find bench -type f -name '*.c')
-INC := $(shell find $(INC_DIR) -type f -name '*.h' -not -name '*.int.h')
+# INC := $(shell find $(INC_DIR) -type f -name '*.h' -not -name '*.int.h')
 OBJ := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC))
 DEP := $(patsubst $(SRC_DIR)/%.c,$(DEP_DIR)/%.d,$(SRC))
 TOBJ := $(patsubst $(TEST_DIR)/%.c,$(TEST_OBJ_DIR)/%.o,$(TSRC))
@@ -235,7 +235,7 @@ compile_commands.json: Makefile $(SRC) $(INC)
 	@bear -- $(MAKE) fclean all CC=clang
 	@echo "compile_commands.json generated."
 
-make_perf_maps: $(HOME)/.deno/bin/deno $(TMP_DIR)/genMap
+make_perf_maps: $(TMP_DIR)/genMap
 	@echo "Generating performance maps for use with Linux perf..."
 	@ s=8; while [ $$s -le 512 ]; do \
 		$(TMP_DIR)/genMap $$s $$s assets/maps/perf/$${s}_[0..2999].cub; \
