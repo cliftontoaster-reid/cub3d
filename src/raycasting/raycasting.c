@@ -6,52 +6,53 @@
 /*   By: zamohame <zamohame@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 14:13:39 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/06 11:31:33 by zamohame         ###   ########.fr       */
+/*   Updated: 2025/11/10 15:54:18 by zamohame         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raycasting.h"
 
-double	cast_one_ray(t_player *player, char **map, double ray_angle,
-		t_data *img)
+double	cast_one_ray(t_player *player, t_map *map, double ray_dx, double ray_dy)
 {
-	double	x;
-	double	y;
+	double	rx;
+	double	ry;
 	double	dx;
 	double	dy;
 	double	distance;
 
-	(void)img;
-	x = player->x;
-	y = player->y;
-	while (map[(int)y][(int)x] != '1')
+	rx = player->x;
+	ry = player->y;
+	while ((int)rx >= 0 && (int)ry >= 0
+	&& (int)rx < map->width && (int)ry < map->height
+	&& map->data[(int)ry][(int)rx] != '1')
 	{
-		x += cos(ray_angle) * step_size;
-		y += sin(ray_angle) * step_size;
+		rx += ray_dx * step_size;
+		ry += ray_dy * step_size;
 		// my_mlx_pixel_put(img, (int)(x * tile_size), (int)(y * tile_size),
 		// 	0x00FF00);
 	}
-	dx = x - player->x;
-	dy = y - player->y;
+	dx = rx - player->x;
+	dy = ry - player->y;
 	distance = sqrt(dx * dx + dy * dy);
 	return (distance);
 }
 
-void	cast_all_rays(t_player *player, char **map, t_data *data)
+void	cast_all_rays(t_player *player, t_map *map, t_data *data)
 {
-	int		i;
+	int		col;
 	double	dist;
-	double	ray_angle;
-	double	angle_step;
+	double camera_x;
+	double	ray_dx;
+	double	ray_dy;
 
-	i = 0;
-	ray_angle = player->dir - (FOV / 2);
-	angle_step = FOV / (double)win_width;
-	while (i < win_width)
+	col = 0;
+	while (col < win_width)
 	{
-		dist = cast_one_ray(player, map, ray_angle, data);
-		draw_wall(data, i, dist);
-		ray_angle += angle_step;
-		i++;
+		camera_x = 2.0 * (double)col / (double)win_width - 1.0;
+		ray_dx = player->dir_x + player->plane_x * camera_x;
+		ray_dy = player->dir_y + player->plane_y * camera_x;
+		dist = cast_one_ray(player, map, ray_dx, ray_dy);
+		draw_wall(data, col, dist);
+		col++;
 	}
 }
