@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 14:13:39 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/10 16:36:51 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/10 16:43:17 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,59 @@
 
 double	cast_one_ray(t_player *player, t_map *map, double ray_dx, double ray_dy)
 {
-	double	rx;
-	double	ry;
-	double	dx;
-	double	dy;
-	double	distance;
+	double	delta_x;
+	double	delta_y;
+	double	side_x;
+	double	side_y;
+	int		map_x;
+	int		map_y;
+	int		step_x;
+	int		step_y;
+	double	perp_dist;
 
-	rx = player->x;
-	ry = player->y;
-	while ((int)rx >= 0 && (int)ry >= 0 && (int)rx < map->width
-		&& (int)ry < map->height && map->data[(int)ry][(int)rx] != '1')
+	map_x = (int)player->x;
+	map_y = (int)player->y;
+	delta_x = fabs(1.0 / ray_dx);
+	delta_y = fabs(1.0 / ray_dy);
+	if (ray_dx < 0)
 	{
-		rx += ray_dx * step_size;
-		ry += ray_dy * step_size;
-		// my_mlx_pixel_put(img, (int)(x * tile_size), (int)(y * tile_size),
-		// 	0x00FF00);
+		step_x = -1;
+		side_x = (player->x - map_x) * delta_x;
 	}
-	dx = rx - player->x;
-	dy = ry - player->y;
-	distance = sqrt(dx * dx + dy * dy);
-	return (distance);
+	else
+	{
+		step_x = 1;
+		side_x = (map_x + 1.0 - player->x) * delta_x;
+	}
+	if (ray_dy < 0)
+	{
+		step_y = -1;
+		side_y = (player->y - map_y) * delta_y;
+	}
+	else
+	{
+		step_y = 1;
+		side_y = (map_y + 1.0 - player->y) * delta_y;
+	}
+	while (1)
+	{
+		if (side_x < side_y)
+		{
+			side_x += delta_x;
+			map_x += step_x;
+			perp_dist = (map_x - player->x + (1 - step_x) / 2) / ray_dx;
+		}
+		else
+		{
+			side_y += delta_y;
+			map_y += step_y;
+			perp_dist = (map_y - player->y + (1 - step_y) / 2) / ray_dy;
+		}
+		if (map_x < 0 || map_y < 0 || map_x >= map->width
+			|| map_y >= map->height || map->data[map_y][map_x] == '1')
+			break ;
+	}
+	return (perp_dist);
 }
 
 void	cast_all_rays(t_player *player, t_map *map, t_data *data)
