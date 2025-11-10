@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 14:23:11 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/04 15:26:00 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/10 14:06:40 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static bool	alloc_list(bool ***list, size_t elem_size, int height, int width)
 	return (true);
 }
 
-t_floodfillinator	*init_floodfillinator(t_map *map)
+t_floodfillinator	*init_floodfillinator(t_map *map, const char *map_path)
 {
 	t_floodfillinator	*ffi;
 
@@ -49,9 +49,11 @@ t_floodfillinator	*init_floodfillinator(t_map *map)
 	if (!ffi)
 		return (NULL);
 	ffi->width = map->width;
+	ffi->start = map->start;
 	ffi->height = map->height;
 	ffi->map = map->data;
 	ffi->to_visit = vec_init(sizeof(t_pointinator));
+	ffi->map_path = map_path;
 	if (!ffi->to_visit)
 	{
 		free(ffi);

@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 14:26:24 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/05 13:24:01 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/10 16:05:42 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,13 @@ bool	run_floodfillinator(t_floodfillinator *ffi, t_pointinator start)
 		cell = ffi->map[current.y][current.x];
 		if (cell == '1')
 			continue ;
-		if (cell == RACIST_MAP_CHAR_THE_DARK_EMPTY_VOID_OF_SPACE)
-			return (false);
-		if (current.x == 0 || current.x == ffi->width - 1 || current.y == 0
+		if (cell == RACIST_MAP_CHAR_THE_DARK_EMPTY_VOID_OF_SPACE
+			|| current.x == 0 || current.x == ffi->width - 1 || current.y == 0
 			|| current.y == ffi->height - 1)
+		{
+			vec_push_back(ffi->to_visit, &current);
 			return (false);
+		}
 		push_pos(ffi, current.x + 1, current.y);
 		push_pos(ffi, current.x - 1, current.y);
 		push_pos(ffi, current.x, current.y + 1);

@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 14:49:38 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/06 15:58:35 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/10 15:40:23 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef VERSION
+# define VERSION "something went wrong"
+#endif
+
 static t_map	*read_da_map(const char *filename)
 {
 	char	*content;
@@ -33,18 +37,16 @@ static t_map	*read_da_map(const char *filename)
 		useful_perror(ENOMEM, "Error:\nCan't read map file ");
 		return (NULL);
 	}
-	map = read_map(content);
+	map = read_map(content, filename);
 	if (!map)
 	{
 		free(content);
-		useful_perror(EINVAL, "Error:\nCan't parse map file ");
 		return (NULL);
 	}
 	free(content);
-	if (is_map_valid(map) == false)
+	if (is_map_valid(map, filename) == false)
 	{
 		free_map(map);
-		useful_perror(EINVAL, "Error:\nMap is open ");
 		return (NULL);
 	}
 	return (map);

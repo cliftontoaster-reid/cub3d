@@ -43,6 +43,7 @@ static void	init_options(t_map *map)
 	map->east_wall_texture = NULL;
 	map->floor_color = -1;
 	map->ceiling_color = -1;
+	map->start = 0;
 }
 
 t_map	*create_map(int width, int height)
