@@ -6,45 +6,35 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 12:54:21 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/10 11:26:14 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/10 16:04:21 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include "map/validatorinator.h"
+#include "messages.h"
+#include "utils/alloc.h"
+#include "utils/panic.h"
+#include <stdio.h>
 
-static bool is_all_accessible(t_floodfillinator *ffi)
+bool	is_map_valid(t_map *map, const char *map_path)
 {
-	int x;
-	int y;
+	t_floodfillinator	*ffi;
+	t_pointinator		start;
+	bool				result;
+	t_pointinator		last_pos;
 
-	y = 0;
-	while (y < ffi->height)
-	{
-		x = 0;
-		while (x < ffi->width)
-		{
-			if (ffi->map[y][x] == '0' || ffi->visited[y][x] == false)
-				return (false);
-			x++;
-		}
-		y++;
-	}
-	return (true);
-}
-
-bool is_map_valid(t_map *map)
-{
-	t_floodfillinator *ffi;
-	t_pointinator start;
-	bool result;
-
-	ffi = init_floodfillinator(map);
+	ffi = init_floodfillinator(map, map_path);
 	if (!ffi)
 		return (false);
 	start.x = map->player_start.x;
 	start.y = map->player_start.y;
 	result = run_floodfillinator(ffi, start);
-	result = result && is_all_accessible(ffi);
+	if (!result)
+	{
+		last_pos = *(t_pointinator *)vec_pop_back(ffi->to_visit);
+		print_map_with_marker(last_pos.y, last_pos.x, ffi, ERR_MAP_NOTCLOSED);
+	}
 	free_floodfillinator(ffi);
 	return (result);
 }
