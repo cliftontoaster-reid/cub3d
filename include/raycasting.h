@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 10:58:10 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/10 16:34:35 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/10 16:45:36 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@
 # define MOVE_SPEED 0.10
 # define ROT_SPEED 0.06
 # define PLANE_LEN 0.66
-# define win_width 800
-# define win_height 600
+# define win_width 2560
+# define win_height 1440
 # define FOV (M_PI / 3)
 
 # include "map/table.h"

@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 14:49:38 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/10 16:34:50 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/10 16:46:05 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,8 @@ static int	start_game(t_map *map)
 	t_player	player;
 
 	mlx = mlx_init();
-	win = mlx_new_window(mlx, 800, 600, "Cub3D v" VERSION);
-	data.img = mlx_new_image(mlx, 800, 600);
+	win = mlx_new_window(mlx, win_width, win_height, "Cub3D v" VERSION);
+	data.img = mlx_new_image(mlx, win_width, win_height);
 	data.addr = mlx_get_data_addr(data.img, &data.bpp, &data.line_length,
 			&data.endian);
 	printf("Initializing player...\n");
