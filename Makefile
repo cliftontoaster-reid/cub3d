@@ -19,6 +19,11 @@ ifeq ($(FSAN),true)
 	LDFLAGS += -fsanitize=address,undefined
 endif
 
+SAN_FLAGS =
+ifeq ($(FSAN),true)
+	SAN_FLAGS = -fsan
+endif
+
 # Tools optimization
 ## Prefer clang, fall back to gcc, then cc
 ifneq (, $(shell which clang))
@@ -42,7 +47,10 @@ SRC_DIR = src
 TEST_DIR = tests
 TARGET = x86_64-linux-gnu
 ORIGIN_DIR = target
-TARGET_DIR = $(ORIGIN_DIR)/$(TARGET)/$(MODE)-$(CC)/$(NAME)
+TROUPLET = $(TARGET)-$(MODE)$(SAN_FLAGS)
+OFFICE_DIR = $(ORIGIN_DIR)/$(TROUPLET)
+WAREHOUSE_DIR = $(ORIGIN_DIR)/warehouse
+TARGET_DIR = $(OFFICE_DIR)/$(NAME)
 OBJ_DIR = $(TARGET_DIR)/obj
 TEST_OBJ_DIR = $(TARGET_DIR)/tobj
 BENCH_OBJ_DIR = $(TARGET_DIR)/bobj
@@ -93,14 +101,16 @@ endif
 
 # libft library (cloned from git and built with make)
 LIBFT_REPO_URL = https://github.com/cliftontoaster-reid/libft.git
-LIBFT_MODULE_DIR = $(ORIGIN_DIR)/$(TARGET)/$(MODE)-$(CC)/libft
+LIBFT_DEPO = $(WAREHOUSE_DIR)/libft
+LIBFT_MODULE_DIR = $(OFFICE_DIR)/libft
 LIBFT_SRC_DIR = $(LIBFT_MODULE_DIR)/src
 LIBFT_ARCHIVE = $(LIBFT_MODULE_DIR)/libft.a
 LIBFT_INCLUDE_DIR = $(LIBFT_MODULE_DIR)
 INCLUDE += -I$(LIBFT_INCLUDE_DIR)
 
 MLX_REPO_URL = https://github.com/42Paris/minilibx-linux.git
-MLX_MODULE_DIR = $(ORIGIN_DIR)/$(TARGET)/minilibx
+MLX_DEPO = $(WAREHOUSE_DIR)/minilibx
+MLX_MODULE_DIR = $(OFFICE_DIR)/minilibx
 MLX_SRC_DIR = $(MLX_MODULE_DIR)/src
 MLX_ARCHIVE = $(MLX_MODULE_DIR)/libmlx.a
 MLX_INCLUDE_DIR = $(MLX_MODULE_DIR)
@@ -111,7 +121,8 @@ LDFLAGS += -L$(MLX_MODULE_DIR) -lmlx -lX11 -lXext -lm
 # We download the prebuilt tar.xz and extract it into the target install dir
 CRITERION_VERSION = 2.4.2
 CRITERION_TARBALL_URL = https://github.com/Snaipe/Criterion/releases/download/v$(CRITERION_VERSION)/criterion-$(CRITERION_VERSION)-linux-x86_64.tar.xz
-CRITERION_MODULE_DIR = $(ORIGIN_DIR)/$(TARGET)/criterion
+CRITERION_DEPO = $(WAREHOUSE_DIR)/criterion
+CRITERION_MODULE_DIR = $(OFFICE_DIR)/criterion
 CRITERION_TMP_DIR = $(CRITERION_MODULE_DIR)/tmp
 CRITERION_TARBALL = $(CRITERION_TMP_DIR)/criterion-$(CRITERION_VERSION)-linux-x86_64.tar.xz
 CRITERION_INSTALL_DIR = $(CRITERION_MODULE_DIR)/bin
@@ -119,6 +130,13 @@ CRITERION_INSTALL_DIR = $(CRITERION_MODULE_DIR)/bin
 all: dirs $(NAME)
 
 -include $(DEP)
+
+# It is a file that tells make which version is currently linked
+# If it was release and you attempt debug, it will see the file is missing
+# then it will delete the other file flags and build the correct one
+.linkflag_$(TROUPLET):
+	@$(RM) -f .linkflag_*
+	@touch $@
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c ${LIBFT_ARCHIVE} ${MLX_ARCHIVE}
 	@mkdir -p $(@D) $(dir $(DEP_DIR)/$*.d)
@@ -135,7 +153,7 @@ $(BENCH_OBJ_DIR)/%.o: bench/%.c ${LIBFT_ARCHIVE} ${MLX_ARCHIVE} ${CRITERION_INST
 	@$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/bench/$*.d -c $< -o $@ $(INCLUDE) -I$(CRITERION_INSTALL_DIR)/include
 	@echo -e "$(BOLD)Compiled$(RESET) $(YELLOW)bench$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/bench/$*.d$(RESET)"
 
-$(NAME): $(OBJ)  $(INCLUDED_FILES)
+$(NAME): $(OBJ)  $(INCLUDED_FILES) .linkflag_$(TROUPLET)
 	@mkdir -p "$(@D)"
 	@$(CC) -o "$@" $(OBJ) $(LIBFT_ARCHIVE) $(LDFLAGS) -D 'VERSION=\"$(VERSION)\"'
 	@echo -e "$(BOLD)Linked$(RESET) $(NAME)"
