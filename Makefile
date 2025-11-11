@@ -153,20 +153,26 @@ $(BENCH_OBJ_DIR)/%.o: bench/%.c ${LIBFT_ARCHIVE} ${MLX_ARCHIVE} ${CRITERION_INST
 	@$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/bench/$*.d -c $< -o $@ $(INCLUDE) -I$(CRITERION_INSTALL_DIR)/include
 	@echo -e "$(BOLD)Compiled$(RESET) $(YELLOW)bench$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/bench/$*.d$(RESET)"
 
-$(NAME): $(OBJ)  $(INCLUDED_FILES) .linkflag_$(TROUPLET)
-	@mkdir -p "$(@D)"
+$(BIN_DIR)/$(NAME): $(OBJ)  $(INCLUDED_FILES)
 	@$(CC) -o "$@" $(OBJ) $(LIBFT_ARCHIVE) $(LDFLAGS) -D 'VERSION=\"$(VERSION)\"'
 	@echo -e "$(BOLD)Linked$(RESET) $(NAME)"
+
+$(NAME): .linkflag_$(TROUPLET) $(BIN_DIR)/$(NAME)
+	@cp $(BIN_DIR)/$(NAME) ./$(NAME)
+	@echo -e "$(BOLD)Copied$(RESET) $(GREEN)$(NAME)$(RESET) to project root."
 
 dirs:
 	@$(foreach d, $(DIRS), mkdir -p "$(d)";)
 
 clean:
 	@$(RM) -r $(OBJ_DIR) $(DEP_DIR)
+	@echo -e "$(BOLD)Removed object and dependency files.$(RESET)"
 
 fclean: clean
 	@$(RM) -r $(ORIGIN_DIR)
+	@echo -e "$(BOLD)Removed target directory.$(RESET)"
 	@$(RM) ./$(NAME) .linkflag_*
+	@echo -e "$(BOLD)Removed link flag.$(RESET)"
 
 re: fclean all
 
