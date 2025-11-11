@@ -66,3 +66,4 @@ target/
 /.cache
 /vgcore.*
 /assets/maps/perf
+/.linkflag_*
