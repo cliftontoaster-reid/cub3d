@@ -62,7 +62,6 @@ t_floodfillinator	*init_floodfillinator(t_map *map, const char *map_path)
 	if (!alloc_list(&ffi->visited, sizeof(bool) * ffi->width, ffi->height,
 			ffi->width))
 	{
-		free(ffi);
 		vec_free(ffi->to_visit);
 		return (NULL);
 	}
