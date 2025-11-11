@@ -19,6 +19,14 @@ ifeq ($(FSAN),true)
 	LDFLAGS += -fsanitize=address,undefined
 endif
 
+V ?= false
+# if not false or true, error
+ifeq ($(V),true)
+else ifeq ($(V),false)
+else
+	$(error "Invalid V specified: $(V). Use 'true' or 'false'.")
+endif
+
 SAN_FLAGS =
 ifeq ($(FSAN),true)
 	SAN_FLAGS = -fsan
@@ -141,17 +149,23 @@ all: dirs $(NAME)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c ${LIBFT_ARCHIVE} ${MLX_ARCHIVE}
 	@mkdir -p $(@D) $(dir $(DEP_DIR)/$*.d)
 	@$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/$*.d -c $< -o $@ $(INCLUDE) -D 'VERSION="$(VERSION)"'
-	@echo -e "$(BOLD)Compiled$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/$*.d$(RESET)"
+	@if [ "$(V)" = "true" ]; then \
+		echo -e "$(BOLD)Compiled$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/$*.d$(RESET)"; \
+	fi
 
 $(TEST_OBJ_DIR)/%.o: $(TEST_DIR)/%.c ${LIBFT_ARCHIVE} ${MLX_ARCHIVE} ${CRITERION_INSTALL_DIR}
 	@mkdir -p $(@D) $(dir $(DEP_DIR)/$*.d)
 	@$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/$*.d -c $< -o $@ $(INCLUDE) -I$(CRITERION_INSTALL_DIR)/include
-	@echo -e "$(BOLD)Compiled$(RESET) $(YELLOW)test$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/$*.d$(RESET)"
+	@if [ "$(V)" = "true" ]; then \
+		echo -e "$(BOLD)Compiled$(RESET) $(YELLOW)test$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/$*.d$(RESET)"; \
+	fi
 
 $(BENCH_OBJ_DIR)/%.o: bench/%.c ${LIBFT_ARCHIVE} ${MLX_ARCHIVE} ${CRITERION_INSTALL_DIR}
 	@mkdir -p $(@D) $(dir $(DEP_DIR)/bench/$*.d)
 	@$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/bench/$*.d -c $< -o $@ $(INCLUDE) -I$(CRITERION_INSTALL_DIR)/include
-	@echo -e "$(BOLD)Compiled$(RESET) $(YELLOW)bench$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/bench/$*.d$(RESET)"
+	@if [ "$(V)" = "true" ]; then \
+		echo -e "$(BOLD)Compiled$(RESET) $(YELLOW)bench$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/bench/$*.d$(RESET)"; \
+	fi
 
 $(BIN_DIR)/$(NAME): $(OBJ)  $(INCLUDED_FILES)
 	@$(CC) -o "$@" $(OBJ) $(LIBFT_ARCHIVE) $(LDFLAGS) -D 'VERSION=\"$(VERSION)\"'
@@ -198,23 +212,25 @@ libft: $(LIBFT_ARCHIVE)
 mlx: $(MLX_ARCHIVE)
 
 $(LIBFT_ARCHIVE):
+	@echo -e "$(BOLD)Building libft library...$(RESET)"
 	@mkdir -p "$(LIBFT_MODULE_DIR)"
 	@# Clone libft if not already present
 	@if [ ! -d "$(LIBFT_MODULE_DIR)/.git" ]; then \
 		git clone "$(LIBFT_REPO_URL)" "$(LIBFT_MODULE_DIR)" > /dev/null 2>&1; \
 	fi
-	@# Build libft with make
-	@$(MAKE) -C "$(LIBFT_MODULE_DIR)" all OBJ_DIR="$(LIBFT_MODULE_DIR)/target" CACHE_DIR="$(LIBFT_MODULE_DIR)/cache" CC="$(CC)" CFLAGS="$(CFLAGS)"
+	@# Build libft with make fully silently
+	@$(MAKE) -C "$(LIBFT_MODULE_DIR)" all OBJ_DIR="$(LIBFT_MODULE_DIR)/target" CACHE_DIR="$(LIBFT_MODULE_DIR)/cache" CC="$(CC)" CFLAGS="$(CFLAGS)" > /dev/null 2>&1
 	@echo -e "$(BOLD)Built libft:$(RESET) $(GREEN)$(LIBFT_ARCHIVE)$(RESET)"
 
 $(MLX_ARCHIVE):
+	@echo -e "$(BOLD)Building minilibx library...$(RESET)"
 	@mkdir -p "$(MLX_MODULE_DIR)"
 	@# Clone minilibx if not already present
 	@if [ ! -d "$(MLX_MODULE_DIR)/.git" ]; then \
 		git clone "$(MLX_REPO_URL)" "$(MLX_MODULE_DIR)" > /dev/null 2>&1; \
 	fi
-	@# Build minilibx with make
-	@$(MAKE) -C "$(MLX_MODULE_DIR)" all CC="$(CC)"
+	@# Build minilibx with make fully silently
+	@$(MAKE) -C "$(MLX_MODULE_DIR)" all CC="$(CC)" > /dev/null 2>&1
 	@echo -e "$(BOLD)Built minilibx:$(RESET) $(GREEN)$(MLX_ARCHIVE)$(RESET)"
 
 test: criterion all $(TOBJ) $(TDEP)
@@ -224,7 +240,7 @@ test: criterion all $(TOBJ) $(TDEP)
 
 run_test/%:
 	@echo "Running tests in virtual X11 display ($*-bit depth)..."
-	@export DISPLAY_DEPTH=$* && LD_LIBRARY_PATH=$(BIN_DIR):$(CRITERION_INSTALL_DIR)/lib xvfb-run --auto-servernum --server-args='-screen 0 1024x768x$*' $(BIN_DIR)/$(NAME).test --verbose
+	@export DISPLAY_DEPTH=$* && LD_LIBRARY_PATH=$(BIN_DIR):$(CRITERION_INSTALL_DIR)/lib xvfb-run --auto-servernum --server-args='-screen 0 1024x768x$*' $(BIN_DIR)/$(NAME).test --V
 
 run_tests: test
 	$(MAKE) run_test/24
