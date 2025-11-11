@@ -166,7 +166,7 @@ clean:
 
 fclean: clean
 	@$(RM) -r $(ORIGIN_DIR)
-	@$(RM) ./$(NAME)
+	@$(RM) ./$(NAME) .linkflag_*
 
 re: fclean all
 
