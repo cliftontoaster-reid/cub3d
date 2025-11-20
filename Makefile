@@ -53,9 +53,9 @@ VERSION = 0.1.0-exp.1
 # Folders
 SRC_DIR = src
 TEST_DIR = tests
-TARGET = x86_64-linux-gnu
+TARGET = x86_64-linux
 ORIGIN_DIR = target
-TROUPLET = $(TARGET)-$(MODE)$(SAN_FLAGS)
+TROUPLET = $(TARGET)-$(CC)-$(MODE)$(SAN_FLAGS)
 OFFICE_DIR = $(ORIGIN_DIR)/$(TROUPLET)
 WAREHOUSE_DIR = $(ORIGIN_DIR)/warehouse
 TARGET_DIR = $(OFFICE_DIR)/$(NAME)
@@ -169,11 +169,11 @@ $(BENCH_OBJ_DIR)/%.o: bench/%.c ${LIBFT_ARCHIVE} ${MLX_ARCHIVE} ${CRITERION_INST
 
 $(BIN_DIR)/$(NAME): $(OBJ)  $(INCLUDED_FILES)
 	@$(CC) -o "$@" $(OBJ) $(LIBFT_ARCHIVE) $(LDFLAGS) -D 'VERSION=\"$(VERSION)\"'
-	@echo -e "$(BOLD)Linked$(RESET) $(NAME)"
+	@echo -e "$(BOLD)Linked$(RESET) $(GREEN)$(NAME)$(RESET)$(BOLD)" at "$(RESET)$(GREEN)$@$(RESET)"
 
 $(NAME): .linkflag_$(TROUPLET) $(BIN_DIR)/$(NAME)
 	@cp $(BIN_DIR)/$(NAME) ./$(NAME)
-	@echo -e "$(BOLD)Copied$(RESET) $(GREEN)$(NAME)$(RESET) to project root."
+	@echo -e "$(BOLD)Copied$(RESET) $(GREEN)$(NAME)$(RESET) $(GREEN)to project root.$(RESET)"
 
 dirs:
 	@$(foreach d, $(DIRS), mkdir -p "$(d)";)
