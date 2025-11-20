@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 15:31:37 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/05 16:25:50 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/20 11:56:09 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ static int	process_map_path(const char *path, double *elapsed_ms, int *width,
 		fprintf(stderr, "Failed to read file: %s\n", path);
 		return (0);
 	}
-	map = read_map(content);
+	map = read_map(content, path);
 	if (!map)
 	{
 		fprintf(stderr, "Failed to parse map: %s\n", path);
