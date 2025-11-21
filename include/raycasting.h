@@ -6,7 +6,7 @@
 /*   By: zamohame <zamohame@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 10:58:10 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/17 15:42:51 by zamohame         ###   ########.fr       */
+/*   Updated: 2025/11/21 15:27:23 by zamohame         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,14 @@
 
 # define tile_size 1
 # define step_size 0.05
-# define MOVE_SPEED 0.1
-# define ROT_SPEED 0.03
+# define MOVE_SPEED 0.02
+# define ROT_SPEED 0.02
 # define PLANE_LEN 0.66
 # define win_width 800
 # define win_height 600
 # define FOV (M_PI / 3)
+# define texWidth 64
+# define texHeight 64
 
 # include "map/table.h"
 # include "mlx.h"
@@ -95,6 +97,7 @@ void			move_forward(t_player *p, char **map);
 void			move_backward(t_player *p, char **map);
 void			strafe_left(t_player *p, char **map);
 void			strafe_right(t_player *p, char **map);
+void			rotate_player(t_player *p, double angle);
 void			rotate_left(t_player *p);
 void			rotate_right(t_player *p);
 

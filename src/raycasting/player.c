@@ -6,7 +6,7 @@
 /*   By: zamohame <zamohame@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 11:31:36 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/10 13:57:08 by zamohame         ###   ########.fr       */
+/*   Updated: 2025/11/18 15:40:17 by zamohame         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,9 @@ void	init_player(t_player *p, t_map *map)
 
 void	rotate_left(t_player *p)
 {
-	double old_dx;
-	double old_px;
-	double ang;
+	double	old_dx;
+	double	old_px;
+	double	ang;
 
 	ang = ROT_SPEED;
 	old_dx = p->dir_x;
@@ -63,9 +63,9 @@ void	rotate_left(t_player *p)
 
 void	rotate_right(t_player *p)
 {
-double old_dx;
-	double old_px;
-	double ang;
+	double	old_dx;
+	double	old_px;
+	double	ang;
 
 	ang = -ROT_SPEED;
 	old_dx = p->dir_x;
