@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zamohame <zamohame@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 14:49:38 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/17 14:38:40 by zamohame         ###   ########.fr       */
+/*   Updated: 2025/11/24 14:55:49 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,9 +100,16 @@ static int	start_game(t_map *map)
 	game.img.addr = mlx_get_data_addr(game.img.img, &game.img.bpp,
 			&game.img.line_length, &game.img.endian);
 	game.map = *map;
+	if (!load_textures(&game, &game.map))
+	{
+		printf("Error: Failed to load textures\n");
+		mlx_destroy_window(game.mlx, game.win);
+		mlx_destroy_image(game.mlx, game.img.img);
+		return (1);
+	}
 	init_player(&game.player, &game.map);
 	ft_bzero(&game.keys, sizeof(t_keys));
-	cast_all_rays(&game.player, &game.map, &game.img);
+	cast_all_rays(&game, &game.player, &game.map, &game.img);
 	mlx_put_image_to_window(game.mlx, game.win, game.img.img, 0, 0);
 	setup_hooks(&game);
 	mlx_loop_hook(game.mlx, handle_keypress, &game);
@@ -133,7 +140,6 @@ int	main(int argc, char const *argv[])
 	if (!map)
 		return (1);
 	start_game(map);
-	print_map(map);
 	free_map(map);
 	return (0);
 }

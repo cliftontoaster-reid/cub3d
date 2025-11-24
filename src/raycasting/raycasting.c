@@ -6,23 +6,26 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 14:13:39 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/10 16:43:17 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/24 14:45:18 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raycasting.h"
+#include <math.h>
 
-double	cast_one_ray(t_player *player, t_map *map, double ray_dx, double ray_dy)
+t_rayhit	cast_one_ray(t_player *player, t_map *map, double ray_dx,
+		double ray_dy)
 {
-	double	delta_x;
-	double	delta_y;
-	double	side_x;
-	double	side_y;
-	int		map_x;
-	int		map_y;
-	int		step_x;
-	int		step_y;
-	double	perp_dist;
+	double		delta_x;
+	double		delta_y;
+	double		side_x;
+	double		side_y;
+	int			map_x;
+	int			map_y;
+	int			step_x;
+	int			step_y;
+	int			hit_vertical;
+	t_rayhit	hit;
 
 	map_x = (int)player->x;
 	map_y = (int)player->y;
@@ -54,28 +57,43 @@ double	cast_one_ray(t_player *player, t_map *map, double ray_dx, double ray_dy)
 		{
 			side_x += delta_x;
 			map_x += step_x;
-			perp_dist = (map_x - player->x + (1 - step_x) / 2) / ray_dx;
+			hit_vertical = 1;
 		}
 		else
 		{
 			side_y += delta_y;
 			map_y += step_y;
-			perp_dist = (map_y - player->y + (1 - step_y) / 2) / ray_dy;
+			hit_vertical = 0;
 		}
 		if (map_x < 0 || map_y < 0 || map_x >= map->width
 			|| map_y >= map->height || map->data[map_y][map_x] == '1')
 			break ;
 	}
-	return (perp_dist);
+	hit.map_x = map_x;
+	hit.map_y = map_y;
+	if (hit_vertical)
+	{
+		hit.side = (step_x == 1) ? 2 : 3;
+		hit.perp_dist = (map_x - player->x + (1 - step_x) / 2) / ray_dx;
+		hit.hit_x = player->y + hit.perp_dist * ray_dy;
+	}
+	else
+	{
+		hit.side = (step_y == 1) ? 0 : 1;
+		hit.perp_dist = (map_y - player->y + (1 - step_y) / 2) / ray_dy;
+		hit.hit_x = player->x + hit.perp_dist * ray_dx;
+	}
+	hit.hit_x = hit.hit_x - floor(hit.hit_x);
+	return (hit);
 }
 
-void	cast_all_rays(t_player *player, t_map *map, t_data *data)
+void	cast_all_rays(t_game *game, t_player *player, t_map *map, t_data *data)
 {
-	int		col;
-	double	dist;
-	double	camera_x;
-	double	ray_dx;
-	double	ray_dy;
+	int			col;
+	t_rayhit	hit;
+	double		camera_x;
+	double		ray_dx;
+	double		ray_dy;
 
 	col = 0;
 	while (col < win_width)
@@ -83,8 +101,8 @@ void	cast_all_rays(t_player *player, t_map *map, t_data *data)
 		camera_x = 2.0 * (double)col / (double)win_width - 1.0;
 		ray_dx = player->dir_x + player->plane_x * camera_x;
 		ray_dy = player->dir_y + player->plane_y * camera_x;
-		dist = cast_one_ray(player, map, ray_dx, ray_dy);
-		draw_wall(data, col, dist);
+		hit = cast_one_ray(player, map, ray_dx, ray_dy);
+		draw_wall(game, data, col, hit);
 		col++;
 	}
 }

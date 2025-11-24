@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   hooks.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zamohame <zamohame@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 13:42:24 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/18 15:40:30 by zamohame         ###   ########.fr       */
+/*   Updated: 2025/11/24 14:16:09 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raycasting.h"
+#include <X11/X.h>
+#include <X11/keysym.h>
 
 int	close_game(t_game *game)
 {
@@ -76,8 +78,8 @@ int	handle_keypress(t_game *game)
 
 void	setup_hooks(t_game *game)
 {
-	mlx_hook(game->win, 2, 1L << 0, key_press, game);
-	mlx_hook(game->win, 3, 1L << 1, key_release, game);
-	mlx_hook(game->win, 17, 0, close_game, game);
+	mlx_hook(game->win, KeyPress, KeyPressMask, key_press, game);
+	mlx_hook(game->win, KeyRelease, KeyReleaseMask, key_release, game);
+	mlx_hook(game->win, DestroyNotify, 0, close_game, game);
 	mlx_loop_hook(game->mlx, handle_keypress, game);
 }

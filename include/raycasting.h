@@ -3,40 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   raycasting.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zamohame <zamohame@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 10:58:10 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/21 15:27:23 by zamohame         ###   ########.fr       */
+/*   Updated: 2025/11/24 17:06:15 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef RAYCASTING_H
-# define RAYCASTING_H
+#pragma once
 
-# ifndef M_PI
-#  define M_PI 3.14159265358979323846
-# endif
+#ifndef M_PI
+# define M_PI 3.14159265358979323846
+#endif
 
-# define tile_size 1
-# define step_size 0.05
-# define MOVE_SPEED 0.02
-# define ROT_SPEED 0.02
-# define PLANE_LEN 0.66
-# define win_width 800
-# define win_height 600
-# define FOV (M_PI / 3)
-# define texWidth 64
-# define texHeight 64
+#define tile_size 1
+#define step_size 0.05
+#define MOVE_SPEED 0.05
+#define ROT_SPEED 0.05
+#define PLANE_LEN 0.66
+#define win_width 1800
+#define win_height 1000
+#define FOV (M_PI / 3)
 
-# include "map/table.h"
-# include "mlx.h"
-# include <X11/keysym.h>
-# include <math.h>
-# include <stddef.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <unistd.h>
+#include "map/table.h"
+#include "mlx.h"
+#include <X11/keysym.h>
+#include <math.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 typedef struct s_data
 {
@@ -47,6 +45,9 @@ typedef struct s_data
 	int			bpp;
 	int			line_length;
 	int			endian;
+
+	int			width;
+	int			height;
 }				t_data;
 
 typedef struct s_player
@@ -77,19 +78,37 @@ typedef struct s_game
 	t_keys		keys;
 	void		*mlx;
 	void		*win;
+
+	t_data		*north;
+	t_data		*south;
+	t_data		*east;
+	t_data		*west;
+
+	long		last_frame_time;
 }				t_game;
+
+typedef struct s_rayhit
+{
+	int			map_x;
+	int			map_y;
+	int			side;
+	double		perp_dist;
+	double		hit_x;
+}				t_rayhit;
 
 /****** Render ******/
 void			my_mlx_pixel_put(t_data *data, int x, int y, int color);
 void			draw_tile(t_data *img, int x, int start_y, int color);
-void			draw_minimap(t_data *img, char **map, t_player *player);
-void			draw_wall(t_data *img, int x, double dist);
+void			draw_minimap(t_game *game);
+void			draw_wall(t_game *game, t_data *img, int x, t_rayhit dist);
 void			render_frame(t_game *game);
+bool			load_textures(t_game *game, t_map *map);
 
 /****** Raycasting ******/
-double			cast_one_ray(t_player *player, t_map *map, double ray_dx,
+t_rayhit		cast_one_ray(t_player *player, t_map *map, double ray_dx,
 					double ray_dy);
-void			cast_all_rays(t_player *player, t_map *map, t_data *data);
+void			cast_all_rays(t_game *game, t_player *player, t_map *map,
+					t_data *data);
 
 /****** Player ******/
 void			init_player(t_player *p, t_map *map);
@@ -107,4 +126,3 @@ int				handle_keypress(t_game *game);
 void			setup_hooks(t_game *game);
 
 void			cleanup_game(t_game *game);
-#endif
