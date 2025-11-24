@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 12:36:18 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/24 17:07:08 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/24 17:32:42 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,9 +127,12 @@ void	draw_minimap(t_game *game)
 		}
 		row++;
 	}
-	col = (int)(game->player.x * tile_size * 2);
-	row = (int)(game->player.y * tile_size * 2);
-	draw_tile(&game->img, col - tile_size / 2, row - tile_size / 2, 0xFF0000);
+	col = (int)(game->player.x * tile_size * 2) - tile_size / 2;
+	row = (int)(game->player.y * tile_size * 2) - tile_size / 2;
+	draw_tile(&game->img, col + 2, row, 0xFF0000);
+	draw_tile(&game->img, col - 2, row, 0xFF0000);
+	draw_tile(&game->img, col, row + 2, 0xFF0000);
+	draw_tile(&game->img, col, row - 2, 0xFF0000);
 }
 
 void	render_frame(t_game *game)
