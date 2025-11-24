@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
+/*   By: zamohame <zamohame@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 14:49:38 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/10 16:46:05 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/17 14:38:40 by zamohame         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,24 +89,24 @@ void	print_legal(void)
 
 static int	start_game(t_map *map)
 {
-	void		*mlx;
-	void		*win;
-	t_data		data;
-	t_player	player;
+	t_game	game;
 
-	mlx = mlx_init();
-	win = mlx_new_window(mlx, win_width, win_height, "Cub3D v" VERSION);
-	data.img = mlx_new_image(mlx, win_width, win_height);
-	data.addr = mlx_get_data_addr(data.img, &data.bpp, &data.line_length,
-			&data.endian);
-	printf("Initializing player...\n");
-	init_player(&player, map);
-	cast_all_rays(&player, map, &data);
-	// draw_minimap(&img, map, &player);
-	mlx_put_image_to_window(mlx, win, data.img, 0, 0);
-	// mlx_hook(win, 2, 1L << 0, handle_keypress, &data);
-	printf("Entering main loop...\n");
-	mlx_loop(mlx);
+	game.mlx = mlx_init();
+	if (!game.mlx)
+		return (1);
+	game.win = mlx_new_window(game.mlx, win_width, win_height,
+			"Cub3D v" VERSION);
+	game.img.img = mlx_new_image(game.mlx, win_width, win_height);
+	game.img.addr = mlx_get_data_addr(game.img.img, &game.img.bpp,
+			&game.img.line_length, &game.img.endian);
+	game.map = *map;
+	init_player(&game.player, &game.map);
+	ft_bzero(&game.keys, sizeof(t_keys));
+	cast_all_rays(&game.player, &game.map, &game.img);
+	mlx_put_image_to_window(game.mlx, game.win, game.img.img, 0, 0);
+	setup_hooks(&game);
+	mlx_loop_hook(game.mlx, handle_keypress, &game);
+	mlx_loop(game.mlx);
 	return (0);
 }
 
