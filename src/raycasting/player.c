@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   player.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zamohame <zamohame@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 11:31:36 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/18 15:40:17 by zamohame         ###   ########.fr       */
+/*   Updated: 2025/11/26 13:02:53 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raycasting.h"
 
-void	init_player(t_player *p, t_map *map)
+bool	init_player(t_player *p, t_map *map)
 {
 	p->x = (double)map->player_start.x + 0.5;
 	p->y = (double)map->player_start.y + 0.5;
@@ -44,9 +44,10 @@ void	init_player(t_player *p, t_map *map)
 		p->plane_x = PLANE_LEN;
 		p->plane_y = 0.0;
 	}
+	return (true);
 }
 
-void	rotate_left(t_player *p)
+bool	rotate_left(t_player *p)
 {
 	double	old_dx;
 	double	old_px;
@@ -59,9 +60,10 @@ void	rotate_left(t_player *p)
 	p->dir_y = old_dx * sin(ang) + p->dir_y * cos(ang);
 	p->plane_x = p->plane_x * cos(ang) - p->plane_y * sin(ang);
 	p->plane_y = old_px * sin(ang) + p->plane_y * cos(ang);
+	return (true);
 }
 
-void	rotate_right(t_player *p)
+bool	rotate_right(t_player *p)
 {
 	double	old_dx;
 	double	old_px;
@@ -74,4 +76,5 @@ void	rotate_right(t_player *p)
 	p->dir_y = old_dx * sin(ang) + p->dir_y * cos(ang);
 	p->plane_x = p->plane_x * cos(ang) - p->plane_y * sin(ang);
 	p->plane_y = old_px * sin(ang) + p->plane_y * cos(ang);
+	return (true);
 }

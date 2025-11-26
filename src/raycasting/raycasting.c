@@ -6,82 +6,78 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 14:13:39 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/24 14:45:18 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/26 12:48:29 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raycasting.h"
 #include <math.h>
 
-t_rayhit	cast_one_ray(t_player *player, t_map *map, double ray_dx,
-		double ray_dy)
+static char	get_tile(t_map *map, int x, int y)
 {
-	double		delta_x;
-	double		delta_y;
-	double		side_x;
-	double		side_y;
-	int			map_x;
-	int			map_y;
-	int			step_x;
-	int			step_y;
-	int			hit_vertical;
-	t_rayhit	hit;
+	if (x < 0 || y < 0 || x >= map->width || y >= map->height)
+		return ('1');
+	return (map->data[y][x]);
+}
 
-	map_x = (int)player->x;
-	map_y = (int)player->y;
-	delta_x = fabs(1.0 / ray_dx);
-	delta_y = fabs(1.0 / ray_dy);
-	if (ray_dx < 0)
-	{
-		step_x = -1;
-		side_x = (player->x - map_x) * delta_x;
-	}
+static void	init_ray_steps(t_ray_ctx *ctx, t_player *player, t_vec2d ray)
+{
+	ctx->upos.x = (int)player->x;
+	ctx->upos.y = (int)player->y;
+	ctx->delta.x = fabs(1.0 / ray.x);
+	ctx->delta.y = fabs(1.0 / ray.y);
+	ctx->step.x = -1 + 2 * (ray.x >= 0);
+	ctx->step.y = -1 + 2 * (ray.y >= 0);
+	if (ray.x < 0)
+		ctx->side.x = (player->x - ctx->upos.x) * ctx->delta.x;
 	else
-	{
-		step_x = 1;
-		side_x = (map_x + 1.0 - player->x) * delta_x;
-	}
-	if (ray_dy < 0)
-	{
-		step_y = -1;
-		side_y = (player->y - map_y) * delta_y;
-	}
+		ctx->side.x = (ctx->upos.x + 1.0 - player->x) * ctx->delta.x;
+	if (ray.y < 0)
+		ctx->side.y = (player->y - ctx->upos.y) * ctx->delta.y;
 	else
-	{
-		step_y = 1;
-		side_y = (map_y + 1.0 - player->y) * delta_y;
-	}
+		ctx->side.y = (ctx->upos.y + 1.0 - player->y) * ctx->delta.y;
+}
+
+static void	dda_loop(t_ray_ctx *ctx, t_map *map)
+{
 	while (1)
 	{
-		if (side_x < side_y)
+		if (ctx->side.x < ctx->side.y)
 		{
-			side_x += delta_x;
-			map_x += step_x;
-			hit_vertical = 1;
+			ctx->side.x += ctx->delta.x;
+			ctx->upos.x += ctx->step.x;
+			ctx->hit_vertical = 1;
 		}
 		else
 		{
-			side_y += delta_y;
-			map_y += step_y;
-			hit_vertical = 0;
+			ctx->side.y += ctx->delta.y;
+			ctx->upos.y += ctx->step.y;
+			ctx->hit_vertical = 0;
 		}
-		if (map_x < 0 || map_y < 0 || map_x >= map->width
-			|| map_y >= map->height || map->data[map_y][map_x] == '1')
+		if (get_tile(map, ctx->upos.x, ctx->upos.y) == '1')
 			break ;
 	}
-	hit.map_x = map_x;
-	hit.map_y = map_y;
-	if (hit_vertical)
+}
+
+static t_rayhit	compute_hit(t_ray_ctx *ctx, t_player *player, t_vec2d ray)
+{
+	t_rayhit	hit;
+
+	hit.map_x = ctx->upos.x;
+	hit.map_y = ctx->upos.y;
+	if (ctx->hit_vertical)
 	{
-		hit.side = (step_x == 1) ? 2 : 3;
-		hit.perp_dist = (map_x - player->x + (1 - step_x) / 2) / ray_dx;
-		hit.hit_x = player->y + hit.perp_dist * ray_dy;
+		hit.side = 2 + (ctx->step.x != 1);
+		hit.perp_dist = (ctx->upos.x - player->x + (1 - ctx->step.x) / 2)
+			/ ray.x;
+		hit.hit_x = player->y + hit.perp_dist * ray.y;
 	}
 	else
 	{
-		hit.side = (step_y == 1) ? 0 : 1;
-		hit.perp_dist = (map_y - player->y + (1 - step_y) / 2) / ray_dy;
-		hit.hit_x = player->x + hit.perp_dist * ray_dx;
+		hit.side = (ctx->step.y != 1);
+		hit.perp_dist = (ctx->upos.y - player->y + (1 - ctx->step.y) / 2)
+			/ ray.y;
+		hit.hit_x = player->x + hit.perp_dist * ray.x;
 	}
 	hit.hit_x = hit.hit_x - floor(hit.hit_x);
 	return (hit);
@@ -92,16 +88,18 @@ void	cast_all_rays(t_game *game, t_player *player, t_map *map, t_data *data)
 	int			col;
 	t_rayhit	hit;
 	double		camera_x;
-	double		ray_dx;
-	double		ray_dy;
+	t_vec2d		ray;
+	t_ray_ctx	ctx;
 
 	col = 0;
 	while (col < win_width)
 	{
 		camera_x = 2.0 * (double)col / (double)win_width - 1.0;
-		ray_dx = player->dir_x + player->plane_x * camera_x;
-		ray_dy = player->dir_y + player->plane_y * camera_x;
-		hit = cast_one_ray(player, map, ray_dx, ray_dy);
+		ray.x = player->dir_x + player->plane_x * camera_x;
+		ray.y = player->dir_y + player->plane_y * camera_x;
+		init_ray_steps(&ctx, player, ray);
+		dda_loop(&ctx, map);
+		hit = compute_hit(&ctx, player, ray);
 		draw_wall(game, data, col, hit);
 		col++;
 	}

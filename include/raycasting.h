@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 10:58:10 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/24 21:57:34 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/26 12:55:44 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,27 @@ typedef struct s_rayhit
 	double		hit_x;
 }				t_rayhit;
 
+typedef struct s_vec2d
+{
+	double		x;
+	double		y;
+}				t_vec2d;
+
+typedef struct s_vec2i
+{
+	int			x;
+	int			y;
+}				t_vec2i;
+
+typedef struct s_ray_ctx
+{
+	t_vec2d		delta;
+	t_vec2d		side;
+	t_vec2i		upos;
+	t_vec2i		step;
+	int			hit_vertical;
+}				t_ray_ctx;
+
 /****** Render ******/
 void			my_mlx_pixel_put(t_data *data, int x, int y, int color);
 void			draw_tile(t_data *img, int x, int start_y, int color);
@@ -105,20 +126,18 @@ void			render_frame(t_game *game);
 bool			load_textures(t_game *game, t_map *map);
 
 /****** Raycasting ******/
-t_rayhit		cast_one_ray(t_player *player, t_map *map, double ray_dx,
-					double ray_dy);
 void			cast_all_rays(t_game *game, t_player *player, t_map *map,
 					t_data *data);
 
 /****** Player ******/
-void			init_player(t_player *p, t_map *map);
-void			move_forward(t_player *p, char **map);
-void			move_backward(t_player *p, char **map);
-void			strafe_left(t_player *p, char **map);
-void			strafe_right(t_player *p, char **map);
-void			rotate_player(t_player *p, double angle);
-void			rotate_left(t_player *p);
-void			rotate_right(t_player *p);
+bool			init_player(t_player *p, t_map *map);
+bool			move_forward(t_player *p, char **map);
+bool			move_backward(t_player *p, char **map);
+bool			strafe_left(t_player *p, char **map);
+bool			strafe_right(t_player *p, char **map);
+bool			rotate_player(t_player *p, double angle);
+bool			rotate_left(t_player *p);
+bool			rotate_right(t_player *p);
 
 /****** Hooks ******/
 int				close_game(t_game *game);
