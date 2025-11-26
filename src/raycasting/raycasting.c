@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 14:13:39 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/26 12:48:29 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/26 14:17:11 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,9 +92,9 @@ void	cast_all_rays(t_game *game, t_player *player, t_map *map, t_data *data)
 	t_ray_ctx	ctx;
 
 	col = 0;
-	while (col < win_width)
+	while (col < WINDOW_WIDTH)
 	{
-		camera_x = 2.0 * (double)col / (double)win_width - 1.0;
+		camera_x = 2.0 * (double)col / (double)WINDOW_WIDTH - 1.0;
 		ray.x = player->dir_x + player->plane_x * camera_x;
 		ray.y = player->dir_y + player->plane_y * camera_x;
 		init_ray_steps(&ctx, player, ray);

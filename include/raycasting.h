@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 10:58:10 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/26 12:55:44 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/26 14:51:20 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,14 @@
 # define M_PI 3.14159265358979323846
 #endif
 
-#define tile_size 1
-#define step_size 0.05
+#define TILE_SIZE 1
+#define STEP_SIZE 0.05
 #define MOVE_SPEED 0.05
 #define ROT_SPEED 0.05
 #define PLANE_LEN 0.66
-#define win_width 1800
-#define win_height 1000
-#define FOV (M_PI / 3)
+#define WINDOW_WIDTH 1800
+#define WINDOW_HEIGHT 1000
+#define FOV 1.0471975511965977461542144610931676280657231331250352736583148
 
 #include "map/table.h"
 #include "mlx.h"
@@ -117,9 +117,20 @@ typedef struct s_ray_ctx
 	int			hit_vertical;
 }				t_ray_ctx;
 
+typedef struct s_wall_ctx
+{
+	double		plane;
+	int			wall_height;
+	int			top;
+	int			bottom;
+	int			y;
+	int			colour;
+	int			start;
+}				t_wall_ctx;
+
 /****** Render ******/
 void			my_mlx_pixel_put(t_data *data, int x, int y, int color);
-void			draw_tile(t_data *img, int x, int start_y, int color);
+void			draw_tile(t_data *img, t_vec2i pos, t_vec2i size, int color);
 void			draw_minimap(t_game *game);
 void			draw_wall(t_game *game, t_data *img, int x, t_rayhit dist);
 void			render_frame(t_game *game);

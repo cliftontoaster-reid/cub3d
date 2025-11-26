@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 13:42:24 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/26 12:59:50 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/26 14:09:34 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 int	close_game(t_game *game)
 {
 	(void)game;
-	// cleanup_game(game);
 	exit(0);
 	return (0);
 }

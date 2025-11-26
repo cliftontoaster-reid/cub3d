@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 13:26:05 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/26 12:57:14 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/26 14:09:20 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,8 +102,8 @@ bool	strafe_left(t_player *p, char **map)
 
 bool	strafe_right(t_player *p, char **map)
 {
-	double nx;
-	double ny;
+	double	nx;
+	double	ny;
 
 	nx = p->x + p->plane_x * MOVE_SPEED;
 	ny = p->y + p->plane_y * MOVE_SPEED;
