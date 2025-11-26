@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 14:26:24 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/10 16:05:42 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/26 14:13:27 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ static inline void	push_pos(t_floodfillinator *ffi, int x, int y)
 		return ;
 	if (ffi->visited[y][x])
 		return ;
-	/* mark visited when pushing to avoid expensive duplicate scans in the vector */
 	ffi->visited[y][x] = true;
 	pos.x = x;
 	pos.y = y;

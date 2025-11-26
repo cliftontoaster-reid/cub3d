@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 10:59:28 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/10 15:57:58 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/26 14:42:28 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,26 @@ static void	freeifneeded(t_map *map, char *options_part, char *map_part)
 		free_map(map);
 }
 
+static bool	split_content(const char *fullcontent, char **options_part,
+		char **map_part, char **last_line)
+{
+	*last_line = findlast_emptyline(fullcontent);
+	if (*last_line == NULL)
+	{
+		ft_putstr_fd("Error:\nInvalid map format: ", 2);
+		ft_putstr_fd("missing empty line between configuration and map\n", 2);
+		return (false);
+	}
+	*options_part = ft_strndup(fullcontent, *last_line - fullcontent);
+	*map_part = ft_strdup(*last_line + 1);
+	if (*options_part == NULL || *map_part == NULL)
+	{
+		freeifneeded(NULL, *options_part, *map_part);
+		return (false);
+	}
+	return (true);
+}
+
 t_map	*read_map(const char *fullcontent, const char *path)
 {
 	char	*last_line;
@@ -63,20 +83,8 @@ t_map	*read_map(const char *fullcontent, const char *path)
 	char	*options_part;
 	t_map	*map;
 
-	last_line = findlast_emptyline(fullcontent);
-	if (last_line == NULL)
-	{
-		ft_putstr_fd("Error:\nInvalid map format: ", 2);
-		ft_putstr_fd("missing empty line between configuration and map\n", 2);
+	if (!split_content(fullcontent, &options_part, &map_part, &last_line))
 		return (NULL);
-	}
-	options_part = ft_strndup(fullcontent, last_line - fullcontent);
-	map_part = ft_strdup(last_line + 1);
-	if (options_part == NULL || map_part == NULL)
-	{
-		freeifneeded(NULL, options_part, map_part);
-		return (NULL);
-	}
 	map = map_from_str(map_part, path, calculate_start_line(last_line,
 				fullcontent));
 	if (map == NULL)

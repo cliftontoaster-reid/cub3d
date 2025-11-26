@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:32:14 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/10 15:57:03 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/26 14:45:11 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void				free_map(t_map *map);
 bool				is_inbounds(t_map *map, int x, int y);
 char				get_map_cell(t_map *map, int x, int y);
 void				set_map_cell(t_map *map, int x, int y, char value);
+int					parse_rgb_value(const char *value);
 
 t_map				*map_from_str(const char *content, const char *map_path,
 						int start);
