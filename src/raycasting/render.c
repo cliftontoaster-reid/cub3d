@@ -49,7 +49,7 @@ int	mlx_get_pixel(t_game *game, t_rayhit dist, int tex_y, int height)
 	return (color);
 }
 
-void	draw_tile(t_data *img, int x, int y, int color)
+inline void	draw_tile(t_data *img, int x, int y, int color)
 {
 	int	i;
 	int	j;

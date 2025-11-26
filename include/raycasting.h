@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 10:58:10 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/24 17:06:15 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/24 21:57:34 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ typedef struct s_game
 	t_data		*east;
 	t_data		*west;
 
-	long		last_frame_time;
+	long long	last_frame_time;
 }				t_game;
 
 typedef struct s_rayhit
