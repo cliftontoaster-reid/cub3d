@@ -67,3 +67,6 @@ target/
 /vgcore.*
 /assets/maps/perf
 /.linkflag_*
+
+# Norminette hates me
+bench/

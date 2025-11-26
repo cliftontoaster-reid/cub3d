@@ -21,3 +21,4 @@
 /src/map/ @cliftontoaster-reid
 /src/utils/ @cliftontoaster-reid
 /src/raycasting/ @Zetsudes
+/src/raycasting/load_textures.c @cliftontoaster-reid

@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 15:20:12 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/10 16:08:20 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/26 14:53:52 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,30 @@ static bool	is_empty(t_map *map)
 	return (true);
 }
 
+static bool	bonk(t_map *map, int i, int j,
+		bool *found_robert_fitzroy_cavendish_smythe_3rd)
+{
+	while (j < map->width)
+	{
+		if (!ft_strchr(INCLUSIVE_MAP_CHARS "\n", map->data[i][j]))
+		{
+			print_map_with_marker_simple(i, j, map, ERR_MAP_INVALIDCHAR);
+			return (false);
+		}
+		if (ft_strchr(RACIST_MAP_CHAR_PLAYER, map->data[i][j]))
+		{
+			if (*found_robert_fitzroy_cavendish_smythe_3rd)
+			{
+				print_map_with_marker_simple(i, j, map, ERR_MAP_MULTIPLAYER);
+				return (false);
+			}
+			*found_robert_fitzroy_cavendish_smythe_3rd = true;
+		}
+		j++;
+	}
+	return (true);
+}
+
 bool	is_map_string_validinator(t_map *map)
 {
 	int		i;
@@ -52,25 +76,8 @@ bool	is_map_string_validinator(t_map *map)
 	while (i < map->height)
 	{
 		j = 0;
-		while (j < map->width)
-		{
-			if (!ft_strchr(INCLUSIVE_MAP_CHARS "\n", map->data[i][j]))
-			{
-				print_map_with_marker_simple(i, j, map, ERR_MAP_INVALIDCHAR);
-				return (false);
-			}
-			if (ft_strchr(RACIST_MAP_CHAR_PLAYER, map->data[i][j]))
-			{
-				if (found_robert_fitzroy_cavendish_smythe_3rd)
-				{
-					print_map_with_marker_simple(i, j, map,
-						ERR_MAP_MULTIPLAYER);
-					return (false);
-				}
-				found_robert_fitzroy_cavendish_smythe_3rd = true;
-			}
-			j++;
-		}
+		if (!bonk(map, i, j, &found_robert_fitzroy_cavendish_smythe_3rd))
+			return (false);
 		i++;
 	}
 	if (!found_robert_fitzroy_cavendish_smythe_3rd)

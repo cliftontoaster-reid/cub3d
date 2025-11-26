@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 13:42:24 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/24 14:16:09 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/26 14:09:34 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 int	close_game(t_game *game)
 {
 	(void)game;
-	// cleanup_game(game);
 	exit(0);
 	return (0);
 }
@@ -60,19 +59,23 @@ int	key_release(int key_code, t_game *game)
 
 int	handle_keypress(t_game *game)
 {
+	bool	moved;
+
+	moved = false;
 	if (game->keys.w)
-		move_forward(&game->player, game->map.data);
+		moved |= move_forward(&game->player, game->map.data);
 	if (game->keys.s)
-		move_backward(&game->player, game->map.data);
+		moved |= move_backward(&game->player, game->map.data);
 	if (game->keys.a)
-		strafe_left(&game->player, game->map.data);
+		moved |= strafe_left(&game->player, game->map.data);
 	if (game->keys.d)
-		strafe_right(&game->player, game->map.data);
+		moved |= strafe_right(&game->player, game->map.data);
 	if (game->keys.left)
-		rotate_left(&game->player);
+		moved |= rotate_left(&game->player);
 	if (game->keys.right)
-		rotate_right(&game->player);
-	render_frame(game);
+		moved |= rotate_right(&game->player);
+	if (moved)
+		render_frame(game);
 	return (0);
 }
 

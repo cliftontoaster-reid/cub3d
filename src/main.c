@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 14:49:38 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/24 14:55:49 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/26 14:17:21 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,9 @@ static int	start_game(t_map *map)
 	game.mlx = mlx_init();
 	if (!game.mlx)
 		return (1);
-	game.win = mlx_new_window(game.mlx, win_width, win_height,
+	game.win = mlx_new_window(game.mlx, WINDOW_WIDTH, WINDOW_HEIGHT,
 			"Cub3D v" VERSION);
-	game.img.img = mlx_new_image(game.mlx, win_width, win_height);
+	game.img.img = mlx_new_image(game.mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
 	game.img.addr = mlx_get_data_addr(game.img.img, &game.img.bpp,
 			&game.img.line_length, &game.img.endian);
 	game.map = *map;

@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 15:44:56 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/04 15:26:12 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/26 14:12:33 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,14 @@ static void	buffer_resize(t_buffer *buffer, size_t min_capacity)
 
 	if (min_capacity <= buffer->capacity)
 		return ;
-	new_capacity = buffer->capacity == 0 ? 1 : buffer->capacity;
+	if (buffer->capacity == 0)
+	{
+		new_capacity = 1;
+	}
+	else
+	{
+		new_capacity = buffer->capacity;
+	}
 	while (new_capacity < min_capacity)
 		new_capacity *= 2;
 	new_data = (char *)malloc(new_capacity);
