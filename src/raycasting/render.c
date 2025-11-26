@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 12:36:18 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/26 15:05:53 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/26 15:30:08 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,7 @@ void	render_frame(t_game *game)
 {
 	struct timeval	tv;
 	int				fps;
+	char			*fps;
 
 	printf("\033[1A");
 	printf("\033[J");
@@ -150,6 +151,8 @@ void	render_frame(t_game *game)
 	printf("FPS: %d\n", fps);
 	game->last_frame_time = (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 	mlx_put_image_to_window(game->mlx, game->win, game->img.img, 0, 0);
+	fps = ft_itoa(fps);
 	mlx_string_put(game->mlx, game->win, WINDOW_WIDTH - 80, 20,
-		~game->map.ceiling_color, ft_itoa(fps));
+		~game->map.ceiling_color, fps);
+	free(fps);
 }
