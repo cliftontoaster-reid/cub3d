@@ -53,6 +53,7 @@ VERSION = 0.1.0-exp.1
 # Folders
 SRC_DIR = src
 TEST_DIR = tests
+BENCH_DIR = .bench
 TARGET = x86_64-linux
 ORIGIN_DIR = target
 TROUPLET = $(TARGET)-$(CC)-$(MODE)$(SAN_FLAGS)
@@ -71,18 +72,18 @@ INC_DIR = include
 # Source files
 SRC := $(shell find $(SRC_DIR) -type f -name '*.c')
 TSRC := $(shell find $(TEST_DIR) -type f -name '*.c')
-BSRC := $(shell find bench -type f -name '*.c')
+BSRC := $(shell find $(BENCH_DIR) -type f -name '*.c')
 # INC := $(shell find $(INC_DIR) -type f -name '*.h' -not -name '*.int.h')
 OBJ := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC))
 DEP := $(patsubst $(SRC_DIR)/%.c,$(DEP_DIR)/%.d,$(SRC))
 TOBJ := $(patsubst $(TEST_DIR)/%.c,$(TEST_OBJ_DIR)/%.o,$(TSRC))
 TDEP := $(patsubst $(TEST_DIR)/%.c,$(DEP_DIR)/%.d,$(TSRC))
-BOBJ := $(patsubst bench/%.c,$(BENCH_OBJ_DIR)/%.o,$(BSRC))
-BDIR_DEPS := $(patsubst bench/%.c,$(DEP_DIR)/bench/%.d,$(BSRC))
-BDEP := $(patsubst bench/%.c,$(DEP_DIR)/bench/%.d,$(BSRC))
+BOBJ := $(patsubst $(BENCH_DIR)/%.c,$(BENCH_OBJ_DIR)/%.o,$(BSRC))
+BDIR_DEPS := $(patsubst $(BENCH_DIR)/%.c,$(DEP_DIR)/$(BENCH_DIR)/%.d,$(BSRC))
+BDEP := $(patsubst $(BENCH_DIR)/%.c,$(DEP_DIR)/$(BENCH_DIR)/%.d,$(BSRC))
 
-# Per-benchmark binaries (one binary per source file in bench/)
-BENCH_BINS := $(patsubst bench/%.c,$(BIN_DIR)/bench-%.bench,$(BSRC))
+# Per-benchmark binaries (one binary per source file in $(BENCH_DIR)/)
+BENCH_BINS := $(patsubst $(BENCH_DIR)/%.c,$(BIN_DIR)/bench-%.bench,$(BSRC))
 
 INCLUDE = -I$(INC_DIR)
 
@@ -160,11 +161,11 @@ $(TEST_OBJ_DIR)/%.o: $(TEST_DIR)/%.c ${LIBFT_ARCHIVE} ${MLX_ARCHIVE} ${CRITERION
 		echo -e "$(BOLD)Compiled$(RESET) $(YELLOW)test$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/$*.d$(RESET)"; \
 	fi
 
-$(BENCH_OBJ_DIR)/%.o: bench/%.c ${LIBFT_ARCHIVE} ${MLX_ARCHIVE} ${CRITERION_INSTALL_DIR}
-	@mkdir -p $(@D) $(dir $(DEP_DIR)/bench/$*.d)
-	@$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/bench/$*.d -c $< -o $@ $(INCLUDE) -I$(CRITERION_INSTALL_DIR)/include
+$(BENCH_OBJ_DIR)/%.o: $(BENCH_DIR)/%.c ${LIBFT_ARCHIVE} ${MLX_ARCHIVE} ${CRITERION_INSTALL_DIR}
+	@mkdir -p $(@D) $(dir $(DEP_DIR)/$(BENCH_DIR)/$*.d)
+	@$(CC) $(CFLAGS) -fPIC -MMD -MP -MF $(DEP_DIR)/$(BENCH_DIR)/$*.d -c $< -o $@ $(INCLUDE) -I$(CRITERION_INSTALL_DIR)/include
 	@if [ "$(V)" = "true" ]; then \
-		echo -e "$(BOLD)Compiled$(RESET) $(YELLOW)bench$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/bench/$*.d$(RESET)"; \
+		echo -e "$(BOLD)Compiled$(RESET) $(YELLOW)bench$(RESET) $(BLUE)$<$(RESET) -> $(GREEN)$@$(RESET) $(BOLD)$(RED)$(DEP_DIR)/$(BENCH_DIR)/$*.d$(RESET)"; \
 	fi
 
 $(BIN_DIR)/$(NAME): $(OBJ)  $(INCLUDED_FILES)
@@ -253,7 +254,7 @@ $(BIN_DIR)/bench-%.bench: $(BENCH_OBJ_DIR)/%.o $(filter-out $(OBJ_DIR)/main.o,$(
 		$(LIBFT_ARCHIVE) $(MLX_ARCHIVE)
 	@echo -e "$(BOLD)Linked bench executable:$(RESET) $(GREEN)$@$(RESET)"
 
-run_bench/%:
+run_$(BENCH_DIR)/%:
 	@echo "Running benchmark"
 	@./$(BIN_DIR)/bench-$*.bench
 
