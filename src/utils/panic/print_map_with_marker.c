@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:13:10 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/10 16:07:45 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/26 14:10:22 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,12 @@ void	print_marker(int col)
 {
 	int	i;
 
-	for (i = -4; i <= col; i++)
+	i = -4;
+	while (i < col)
+	{
 		printf(" ");
+		i++;
+	}
 	printf(ANSI_RED "^%s\n", ANSI_RESET);
 }
 
