@@ -109,10 +109,10 @@ static int	start_game(t_map *map)
 	}
 	init_player(&game.player, &game.map);
 	ft_bzero(&game.keys, sizeof(t_keys));
+	game.last_frame_time = 0;
 	cast_all_rays(&game, &game.player, &game.map, &game.img);
 	mlx_put_image_to_window(game.mlx, game.win, game.img.img, 0, 0);
 	setup_hooks(&game);
-	mlx_loop_hook(game.mlx, handle_keypress, &game);
 	mlx_loop(game.mlx);
 	return (0);
 }

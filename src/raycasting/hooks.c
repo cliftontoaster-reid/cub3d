@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   hooks.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
+/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 13:42:24 by zamohame          #+#    #+#             */
-/*   Updated: 2025/11/26 14:09:34 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/28 11:40:18 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,8 @@ int	handle_keypress(t_game *game)
 
 void	setup_hooks(t_game *game)
 {
-	mlx_hook(game->win, KeyPress, KeyPressMask, key_press, game);
-	mlx_hook(game->win, KeyRelease, KeyReleaseMask, key_release, game);
-	mlx_hook(game->win, DestroyNotify, 0, close_game, game);
+	mlx_hook(game->win, 2, 1L << 0, key_press, game);
+	mlx_hook(game->win, 3, 1L << 1, key_release, game);
+	mlx_hook(game->win, 17, 0, close_game, game);
 	mlx_loop_hook(game->mlx, handle_keypress, game);
 }
